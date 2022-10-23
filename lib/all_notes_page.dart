@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:notes/note_tile.dart';
 
 class AllNotesPage extends StatefulWidget {
   const AllNotesPage({Key? key}) : super(key: key);
@@ -21,7 +22,7 @@ class _AllNotesPageState extends State<AllNotesPage> {
               width: 20,
             ),
             const Text(
-              "All notes",
+              'All notes',
               style: TextStyle(
                   color: Color.fromRGBO(255, 255, 255, .85), fontSize: 22),
             ),
@@ -64,7 +65,24 @@ class _AllNotesPageState extends State<AllNotesPage> {
             )
           ],
         ),
+        Row(
+          children: const [Text('date modified..')],
+        ),
+        _buildNoteTiles()
       ],
+    );
+  }
+
+  Widget _buildNoteTiles() {
+    return Expanded(
+      child: GridView.builder(
+        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+          crossAxisCount: 5,
+        ),
+        padding: const EdgeInsets.all(2),
+        itemBuilder: (BuildContext context, int index) => const NoteTile(),
+        itemCount: 3,
+      ),
     );
   }
 }

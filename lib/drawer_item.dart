@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
 
-import 'CollapseDrawer.dart';
-
 class DrawerItem extends StatelessWidget {
   const DrawerItem(
-      {Key? key, required this.dta, this.endText, required this.collapsed, required this.active, required this.onTap})
+      {Key? key,
+      required this.dta,
+      this.endText,
+      required this.collapsed,
+      required this.active,
+      required this.onTap})
       : super(key: key);
   final ItemData dta;
   final String? endText;
@@ -21,15 +24,16 @@ class DrawerItem extends StatelessWidget {
         child: ClipRRect(
           borderRadius: BorderRadius.circular(10),
           child: Container(
-            color: active ? const Color.fromRGBO(255,255,255,.25) : Colors.transparent,
+            color: active ? const Color(0xff6e6e6e) : Colors.transparent,
             child: Padding(
-              padding: const EdgeInsets.only(left: 9, top: 7, bottom: 7, right: 9),
+              padding:
+                  const EdgeInsets.only(left: 9, top: 7, bottom: 7, right: 9),
               child: Row(
                 children: [
                   Icon(
                     dta.icon,
                     size: 26,
-                    color: const Color.fromRGBO(255, 255, 255, .75),
+                    color: const Color(0xffdbdbdb),
                   ),
                   if (!collapsed) ...[
                     const SizedBox(
@@ -37,14 +41,12 @@ class DrawerItem extends StatelessWidget {
                     ),
                     Text(
                       dta.name,
-                      style:
-                          const TextStyle(color: Color.fromRGBO(255, 255, 255, .85)),
+                      style: const TextStyle(color: Color(0xffe9e9e9)),
                     ),
                     Expanded(child: Container()),
                     Text(
-                      endText ?? "",
-                      style:
-                          const TextStyle(color: Color.fromRGBO(255, 255, 255, .45)),
+                      endText ?? '',
+                      style: const TextStyle(color: Color(0xffafafaf)),
                     ),
                     const SizedBox(
                       width: 15,

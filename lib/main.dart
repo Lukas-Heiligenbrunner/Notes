@@ -38,16 +38,23 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      floatingActionButton: FloatingActionButton(
+          onPressed: () {},
+          backgroundColor: const Color(0xff3f3f3f),
+          child:
+              const Icon(Icons.edit_calendar_outlined, color: Colors.orange)),
       body: Row(
         children: [
           CollapseDrawer(
-              onPageChange: (View newPage) =>
-                  setState(() => activePage = newPage), activePage: activePage,),
+            onPageChange: (View newPage) =>
+                setState(() => activePage = newPage),
+            activePage: activePage,
+          ),
           Expanded(
               child: Container(
-                color: const Color.fromRGBO(0, 0, 0, .95),
-                child: _buildPage(),
-              ))
+            color: const Color(0xff0d0d0d),
+            child: _buildPage(),
+          ))
         ],
       ),
     );
@@ -58,11 +65,20 @@ class _MyHomePageState extends State<MyHomePage> {
       case View.all:
         return const AllNotesPage();
       case View.shared:
-        return const Text("Todo1", style: TextStyle(color: Colors.white),);
+        return const Text(
+          'Todo1',
+          style: TextStyle(color: Colors.white),
+        );
       case View.recycle:
-        return const Text("Todo", style: TextStyle(color: Colors.white),);
+        return const Text(
+          'Todo',
+          style: TextStyle(color: Colors.white),
+        );
       case View.folders:
-        return const Text("Todo", style: TextStyle(color: Colors.white),);
+        return const Text(
+          'Todo',
+          style: TextStyle(color: Colors.white),
+        );
     }
   }
 }

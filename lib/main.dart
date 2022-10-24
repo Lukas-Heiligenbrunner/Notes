@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:notes/CollapseDrawer.dart';
 import 'package:notes/all_notes_page.dart';
+import 'package:notes/canvas/drawing_canvas.dart';
 
 void main() {
   runApp(const MyApp());
@@ -38,11 +39,7 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      floatingActionButton: FloatingActionButton(
-          onPressed: () {},
-          backgroundColor: const Color(0xff3f3f3f),
-          child:
-              const Icon(Icons.edit_calendar_outlined, color: Colors.orange)),
+      floatingActionButton: _fab(),
       body: Row(
         children: [
           CollapseDrawer(
@@ -60,23 +57,44 @@ class _MyHomePageState extends State<MyHomePage> {
     );
   }
 
+  Widget _fab() {
+    switch (activePage) {
+      case View.all:
+      case View.folders:
+        return FloatingActionButton(
+          onPressed: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => const DrawingCanvas(),
+              ),
+            );
+          },
+          backgroundColor: const Color(0xff3f3f3f),
+          child: const Icon(Icons.edit_calendar_outlined, color: Colors.orange),
+        );
+      default:
+        return Container();
+    }
+  }
+
   Widget _buildPage() {
     switch (activePage) {
       case View.all:
         return const AllNotesPage();
       case View.shared:
         return const Text(
-          'Todo1',
+          'shared notebooks WIP',
           style: TextStyle(color: Colors.white),
         );
       case View.recycle:
         return const Text(
-          'Todo',
+          'recycle bin WIP',
           style: TextStyle(color: Colors.white),
         );
       case View.folders:
         return const Text(
-          'Todo',
+          'Folders WIP',
           style: TextStyle(color: Colors.white),
         );
     }

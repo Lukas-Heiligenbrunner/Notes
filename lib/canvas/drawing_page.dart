@@ -18,7 +18,7 @@ class _DrawingPageState extends State<DrawingPage> {
   List<Stroke> _strokes = [];
   bool allowDrawWithFinger = false;
 
-  double zoom = 0.6;
+  double zoom = .5;
   Offset scrollPos = const Offset(.0, .0);
 
   @override
@@ -29,15 +29,18 @@ class _DrawingPageState extends State<DrawingPage> {
     );
   }
 
-  double _calcTiltedWidth(double baseWidth, double tilt){
+  double _calcTiltedWidth(double baseWidth, double tilt) {
     return baseWidth * tilt;
   }
 
-  double _calcAngleDependentWidth(List<Point> pts, double basetickness){
+  double _calcAngleDependentWidth(List<Point> pts, double basetickness) {
     return basetickness;
 
     // todo do correct linear interpolation and extimate angle
-    final lininterpol = PolynomialInterpolation(nodes: pts.map((e) => InterpolationNode(x: e.point.dx, y: e.point.dy)).toList(growable: false));
+    final lininterpol = PolynomialInterpolation(
+        nodes: pts
+            .map((e) => InterpolationNode(x: e.point.dx, y: e.point.dy))
+            .toList(growable: false));
     lininterpol.compute(1.0);
     print(lininterpol.buildPolynomial().toString());
 
@@ -102,40 +105,16 @@ class _DrawingPageState extends State<DrawingPage> {
             print(_strokes.last.points.length);
           }
         },
-        // child: GestureDetector(
-        // onPanUpdate: (DragUpdateDetails details) {
-        //   setState(() {
-        //     _strokes = List.from(_strokes,growable: false)..last.points.add(details.localPosition);
-        //   });
-        // },
-        // onPanEnd: (DragEndDetails details) {
-        //   if(_strokes.last.points.length <= 1){
-        //     // if the line consists only of one point (point) add endpoint as the same to allow drawing a line
-        //     // todo maybe solve this in custompainter in future
-        //     setState(() {
-        //       _strokes = List.from(_strokes,growable: false)..last.points.add(_strokes.last.points.last);
-        //     });
-        //   }else{
-        //     setState(() {});
-        //   }
-        //
-        //
-        //   print(_strokes.length);
-        //   print(_strokes.last.points.length);
-        // },
-        // onPanStart: (details) {
-        //   setState(() {
-        //     _strokes = List.from(_strokes)..add(Stroke.fromPoints([details.localPosition]));
-        //   });
-        // },
-        child: SingleChildScrollView(
-          child: Center(
-            child: CustomPaint(
-              painter: MyPainter(strokes: _strokes),
-              // todo not working
-              size: Size(zoomedwidth, zoomedwidth * sqrt2), // todo add different paper dimensions
-              // ),
-            ),
+        child: GestureDetector(
+        onScaleUpdate: (details) {
+          setState(() {
+            zoom = details.scale;
+          });
+        },
+        child: CustomPaint(
+          painter: MyPainter(strokes: _strokes,offset: scrollPos, zoom: zoom),
+          // todo not working
+          size: Size.infinite, // todo add different paper dimensions
           ),
         ),
       ),

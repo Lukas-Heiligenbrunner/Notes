@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:notes/CollapseDrawer.dart';
 import 'package:notes/all_notes_page.dart';
-import 'package:notes/canvas/drawing_canvas.dart';
+import 'package:notes/canvas/drawing_page.dart';
 
 void main() {
   runApp(const MyApp());
@@ -66,7 +66,7 @@ class _MyHomePageState extends State<MyHomePage> {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => const DrawingCanvas(),
+                builder: (context) => const DrawingPage(),
               ),
             );
           },

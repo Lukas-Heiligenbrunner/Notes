@@ -1,5 +1,3 @@
-import 'dart:math';
-
 import 'package:flutter/material.dart';
 
 import 'document_types.dart';
@@ -15,6 +13,8 @@ class MyPainter extends CustomPainter {
       ..color = Colors.blue
       ..strokeCap = StrokeCap.square;
       // ..strokeWidth = 3.0;
+
+    canvas.drawColor(Color.fromRGBO(255, 255, 255, .1), BlendMode.src);
 
     for(final stroke in strokes){
       for(int i = 0; i < stroke.points.length -1; i++){

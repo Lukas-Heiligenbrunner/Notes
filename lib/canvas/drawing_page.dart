@@ -7,16 +7,19 @@ import 'package:notes/canvas/my_painter.dart';
 
 import 'document_types.dart';
 
-class DrawingCanvas extends StatefulWidget {
-  const DrawingCanvas({Key? key}) : super(key: key);
+class DrawingPage extends StatefulWidget {
+  const DrawingPage({Key? key}) : super(key: key);
 
   @override
-  State<DrawingCanvas> createState() => _DrawingCanvasState();
+  State<DrawingPage> createState() => _DrawingPageState();
 }
 
-class _DrawingCanvasState extends State<DrawingCanvas> {
+class _DrawingPageState extends State<DrawingPage> {
   List<Stroke> _strokes = [];
   bool allowDrawWithFinger = false;
+
+  double zoom = 0.6;
+  Offset scrollPos = const Offset(.0, .0);
 
   @override
   Widget build(BuildContext context) {
@@ -31,6 +34,8 @@ class _DrawingCanvasState extends State<DrawingCanvas> {
   }
 
   double _calcAngleDependentWidth(List<Point> pts, double basetickness){
+    return basetickness;
+
     // todo do correct linear interpolation and extimate angle
     final lininterpol = PolynomialInterpolation(nodes: pts.map((e) => InterpolationNode(x: e.point.dx, y: e.point.dy)).toList(growable: false));
     lininterpol.compute(1.0);
@@ -45,6 +50,10 @@ class _DrawingCanvasState extends State<DrawingCanvas> {
   }
 
   Widget _buildCanvas() {
+    final width = MediaQuery.of(context).size.width;
+
+    final zoomedwidth = width * zoom;
+
     return Scaffold(
       body: Listener(
         onPointerMove: (event) {
@@ -75,6 +84,7 @@ class _DrawingCanvasState extends State<DrawingCanvas> {
             });
           }
         },
+
         onPointerUp: (event) {
           if (allowDrawWithFinger || event.kind != PointerDeviceKind.touch) {
             if (_strokes.last.points.length <= 1) {
@@ -118,10 +128,15 @@ class _DrawingCanvasState extends State<DrawingCanvas> {
         //     _strokes = List.from(_strokes)..add(Stroke.fromPoints([details.localPosition]));
         //   });
         // },
-        child: CustomPaint(
-          painter: MyPainter(strokes: _strokes),
-          size: Size.infinite,
-          // ),
+        child: SingleChildScrollView(
+          child: Center(
+            child: CustomPaint(
+              painter: MyPainter(strokes: _strokes),
+              // todo not working
+              size: Size(zoomedwidth, zoomedwidth * sqrt2), // todo add different paper dimensions
+              // ),
+            ),
+          ),
         ),
       ),
     );

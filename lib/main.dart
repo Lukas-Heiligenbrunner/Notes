@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:notes/CollapseDrawer.dart';
+import 'package:notes/collapse_drawer.dart';
 import 'package:notes/all_notes_page.dart';
 import 'package:notes/canvas/drawing_page.dart';
 

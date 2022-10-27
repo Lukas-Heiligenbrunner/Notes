@@ -37,6 +37,7 @@ class _CollapseDrawerState extends State<CollapseDrawer>
   @override
   Widget build(BuildContext context) {
     return Container(
+      padding: EdgeInsets.only(top: MediaQuery.of(context).viewPadding.top),
       color: const Color(0xff0d0d0d),
       child: ClipRRect(
         borderRadius: const BorderRadius.only(

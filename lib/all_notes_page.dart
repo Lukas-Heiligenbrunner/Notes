@@ -13,8 +13,8 @@ class _AllNotesPageState extends State<AllNotesPage> {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        const SizedBox(
-          height: 10,
+        SizedBox(
+          height: 10 + MediaQuery.of(context).viewPadding.top,
         ),
         Row(
           children: [

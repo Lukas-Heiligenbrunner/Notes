@@ -8,6 +8,10 @@ class Stroke {
     return 'Stroke{points: $points}';
   }
 
+  void addPoint(Point point) {
+    points.add(point);
+  }
+
   Stroke.fromPoints(this.points);
   Stroke();
 }

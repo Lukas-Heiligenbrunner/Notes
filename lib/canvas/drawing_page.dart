@@ -53,7 +53,7 @@ class _DrawingPageState extends State<DrawingPage> {
   }
 
   double _calcTiltedWidth(double baseWidth, double tilt) {
-    if(tilt == .0) return baseWidth;
+    if (tilt == .0) return baseWidth;
     return baseWidth * tilt;
   }
 
@@ -69,7 +69,6 @@ class _DrawingPageState extends State<DrawingPage> {
 
     alpha /= (2 * pi * 2);
     alpha += .5;
-
 
     double thickness = basetickness * alpha;
     return thickness;
@@ -119,8 +118,8 @@ class _DrawingPageState extends State<DrawingPage> {
 
       double newWidth = _calcTiltedWidth(5.0, event.tilt);
       if (_strokes.last.points.length > 1) {
-        newWidth = _calcAngleDependentWidth(
-            pts.last, pts[pts.length - 2], newWidth);
+        newWidth =
+            _calcAngleDependentWidth(pts.last, pts[pts.length - 2], newWidth);
       }
 
       setState(() {

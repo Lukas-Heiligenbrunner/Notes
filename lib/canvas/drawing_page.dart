@@ -1,3 +1,4 @@
+import 'dart:math';
 import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:notes/canvas/my_painter.dart';
@@ -52,26 +53,26 @@ class _DrawingPageState extends State<DrawingPage> {
   }
 
   double _calcTiltedWidth(double baseWidth, double tilt) {
+    if(tilt == .0) return baseWidth;
     return baseWidth * tilt;
   }
 
-  double _calcAngleDependentWidth(List<Point> pts, double basetickness) {
-    return basetickness;
+  double _calcAngleDependentWidth(Point pt1, Point pt2, double basetickness) {
+    double dx = pt2.point.dx - pt1.point.dx;
+    double dy = pt2.point.dy - pt1.point.dy;
 
-    // todo do correct linear interpolation and extimate angle
-    // final lininterpol = PolynomialInterpolation(
-    //     nodes: pts
-    //         .map((e) => InterpolationNode(x: e.point.dx, y: e.point.dy))
-    //         .toList(growable: false));
-    // lininterpol.compute(1.0);
-    // print(lininterpol.buildPolynomial().toString());
-    //
-    // // double angle = atan((pt2.dy - pt1.dy)/(pt2.dx - pt1.dx));
-    //
-    // final angle = 5 / (2 * pi);
-    // // print("pt1: ${pt1}, pt2: ${pt2}, angle: ${angle}");
-    //
-    // return basetickness * (angle / .5 + .5);
+    // todo those deltas to small to get an accurate direction!
+
+    double alpha = atan(dx / dy);
+    // alpha has range from 0 - 2pi
+    // we want 0.5 -1;
+
+    alpha /= (2 * pi * 2);
+    alpha += .5;
+
+
+    double thickness = basetickness * alpha;
+    return thickness;
   }
 
   // calculate new page offset from mousepointer delta
@@ -116,17 +117,12 @@ class _DrawingPageState extends State<DrawingPage> {
 
       if (pts.last.point == pos) return;
 
-      double newWidth = _calcTiltedWidth(3.0, event.tilt);
-
+      double newWidth = _calcTiltedWidth(5.0, event.tilt);
       if (_strokes.last.points.length > 1) {
-        // todo current point not in list
         newWidth = _calcAngleDependentWidth(
-            pts
-                .getRange(
-                    pts.length - 10 >= 0 ? pts.length - 10 : 0, pts.length)
-                .toList(growable: false),
-            event.tilt);
+            pts.last, pts[pts.length - 2], newWidth);
       }
+
       setState(() {
         _strokes = List.from(_strokes, growable: false)
           ..last.addPoint(Point(pos, newWidth));

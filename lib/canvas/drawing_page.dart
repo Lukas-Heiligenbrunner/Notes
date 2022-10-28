@@ -111,6 +111,27 @@ class _DrawingPageState extends State<DrawingPage> {
       return;
     }
 
+    // todo outsource this eraser pen
+    if (eraseractive) {
+      // todo dynamic eraser size
+      final eraserrect = Rect.fromCircle(center: pos, radius: 3);
+      for (final stroke in _strokes) {
+        // check if delete action was within bounding rect of stroke
+        if (stroke.getBoundingRect().contains(pos)) {
+          // check if eraser hit an point within its range
+          for (final pt in stroke.points) {
+            if (eraserrect.contains(pt.point)) {
+              setState(() {
+                _strokes = List.from(_strokes)..remove(stroke);
+              });
+              return;
+            }
+          }
+        }
+      }
+      return;
+    }
+
     if (allowDrawWithFinger || event.kind != PointerDeviceKind.touch) {
       final pts = _strokes.last.points;
 
@@ -134,71 +155,71 @@ class _DrawingPageState extends State<DrawingPage> {
   Widget _buildCanvas() {
     final size = MediaQuery.of(context).size;
 
-    return Scaffold(
-      body: Listener(
-        behavior: HitTestBehavior.opaque,
-        onPointerMove: (e) => _onPointerMove(e, size),
-        onPointerSignal: (event) {
-          print('Button: ${event.buttons}');
-        },
-        onPointerDown: (event) {
-          print('Button: ${event.buttons}');
+    return Listener(
+      behavior: HitTestBehavior.opaque,
+      onPointerMove: (e) => _onPointerMove(e, size),
+      onPointerSignal: (event) {
+        print('Button: ${event.buttons}');
+      },
+      onPointerDown: (event) {
+        print('Button: ${event.buttons}');
 
-          if (allowDrawWithFinger || event.kind != PointerDeviceKind.touch) {
-            Offset pos = event.localPosition;
-            final scale = calcPageDependentScale(zoom, a4Page, size);
-            pos = translateScreenToDocumentPoint(pos, scale, offset);
+        if (allowDrawWithFinger || event.kind != PointerDeviceKind.touch) {
+          Offset pos = event.localPosition;
+          final scale = calcPageDependentScale(zoom, a4Page, size);
+          pos = translateScreenToDocumentPoint(pos, scale, offset);
 
-            // todo line drawn on edge where line left page
-            if (!a4Page.contains(pos)) return;
+          // todo line drawn on edge where line left page
+          if (!a4Page.contains(pos)) return;
 
-            if (eraseractive) return;
+          if (eraseractive) return;
 
+          setState(() {
+            _strokes = List.from(_strokes)
+              ..add(Stroke.fromPoints(
+                  [Point(pos, _calcTiltedWidth(3.0, event.tilt))]));
+          });
+        }
+      },
+      onPointerUp: (event) {
+        if (eraseractive) return;
+
+        if (allowDrawWithFinger || event.kind != PointerDeviceKind.touch) {
+          if (_strokes.last.points.length <= 1) {
+            // if the line consists only of one point (point) add endpoint as the same to allow drawing a line
+            // todo maybe solve this in custompainter in future
             setState(() {
-              _strokes = List.from(_strokes)
-                ..add(Stroke.fromPoints(
-                    [Point(pos, _calcTiltedWidth(3.0, event.tilt))]));
+              _strokes = List.from(_strokes, growable: false)
+                ..last.points.add(_strokes.last.points.last);
             });
+          } else {
+            setState(() {});
           }
-        },
-        onPointerUp: (event) {
-          if (allowDrawWithFinger || event.kind != PointerDeviceKind.touch) {
-            if (_strokes.last.points.length <= 1) {
-              // if the line consists only of one point (point) add endpoint as the same to allow drawing a line
-              // todo maybe solve this in custompainter in future
-              setState(() {
-                _strokes = List.from(_strokes, growable: false)
-                  ..last.points.add(_strokes.last.points.last);
-              });
-            } else {
-              setState(() {});
-            }
 
-            print(_strokes.length);
-            print(_strokes.last.points.length);
-          }
-        },
-        child: GestureDetector(
-          onScaleUpdate: (details) {
-            if (details.scale == 1.0) return;
+          print(_strokes.length);
+          print(_strokes.last.points.length);
+        }
+      },
+      child: GestureDetector(
+        onScaleUpdate: (details) {
+          if (details.scale == 1.0) return;
 
-            setState(() {
-              zoom = (basezoom * details.scale).clamp(0.25, 5.0);
-            });
-          },
-          onScaleEnd: (details) {
-            basezoom = zoom;
-          },
-          onSecondaryTap: () {
-            print('secctab');
-          },
-          onTertiaryTapDown: (details) {
-            print('tertiary button');
-          },
-          child: CustomPaint(
-            painter: MyPainter(strokes: _strokes, offset: offset, zoom: zoom),
-            size: Size.infinite,
-          ),
+          setState(() {
+            zoom = (basezoom * details.scale).clamp(0.25, 5.0);
+          });
+        },
+        onScaleEnd: (details) {
+          basezoom = zoom;
+        },
+        onSecondaryTap: () {
+          print('secctab');
+        },
+        onTertiaryTapDown: (details) {
+          print('tertiary button');
+        },
+        child: CustomPaint(
+          painter: MyPainter(strokes: _strokes, offset: offset, zoom: zoom),
+          size: Size.infinite,
         ),
       ),
     );

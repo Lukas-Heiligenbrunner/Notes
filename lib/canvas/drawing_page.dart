@@ -1,6 +1,7 @@
 import 'dart:math';
 import 'dart:ui';
 import 'package:fluentui_system_icons/fluentui_system_icons.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:notes/savesystem/note_file.dart';
 import 'my_painter.dart';
@@ -133,9 +134,11 @@ class _DrawingPageState extends State<DrawingPage> {
       return;
     }
 
-    controller.pointMoveEvent(pos, event.kind, event.tilt);
+    controller.pointMoveEvent(pos, event);
 
-    if (event.kind == PointerDeviceKind.touch) {
+    if (event.kind == PointerDeviceKind.touch ||
+        (event.kind == PointerDeviceKind.mouse &&
+            event.buttons == kSecondaryMouseButton)) {
       _calcNewPageOffset(event.delta, size.width);
     }
   }
@@ -147,14 +150,14 @@ class _DrawingPageState extends State<DrawingPage> {
     return Listener(
       behavior: HitTestBehavior.opaque,
       onPointerMove: (e) => _onPointerMove(e, canvasSize),
-      onPointerDown: (event) {
-        Offset pos = event.localPosition;
+      onPointerDown: (d) {
+        Offset pos = d.localPosition;
         final scale = calcPageDependentScale(zoom, a4Page, canvasSize);
         pos = translateScreenToDocumentPoint(pos, scale, offset);
-        controller.pointDownEvent(pos, event.kind, event.tilt);
+        controller.pointDownEvent(pos, d);
       },
-      onPointerUp: (event) {
-        controller.pointUpEvent(event.kind);
+      onPointerUp: (e) {
+        controller.pointUpEvent(e);
       },
       child: GestureDetector(
         onScaleUpdate: (details) {

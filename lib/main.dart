@@ -3,12 +3,14 @@ import 'package:flutter/material.dart';
 import 'package:notes/collapse_drawer.dart';
 import 'package:notes/all_notes_page.dart';
 import 'package:notes/canvas/drawing_page.dart';
+import 'package:sqflite/sqflite.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 
 void main() {
   if (defaultTargetPlatform != TargetPlatform.android &&
       defaultTargetPlatform != TargetPlatform.iOS) {
     sqfliteFfiInit();
+    databaseFactory = databaseFactoryFfi;
   }
   runApp(const MyApp());
 }
@@ -69,9 +71,10 @@ class _MyHomePageState extends State<MyHomePage> {
       case View.folders:
         return FloatingActionButton(
           onPressed: () {
-            //final now = DateTime.now();
-            //String filename = 'note-${now.year}_${now.month}_${now.day}-${now.hour}_${now.minute}.dbnote';
-            String filename = 'test.dbnote';
+            final now = DateTime.now();
+            String filename =
+                'note-${now.year}_${now.month}_${now.day}-${now.hour}_${now.minute}.dbnote';
+
             Navigator.push(
               context,
               MaterialPageRoute(

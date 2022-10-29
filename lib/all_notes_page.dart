@@ -1,6 +1,9 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:notes/icon_material_button.dart';
 import 'package:notes/note_tile.dart';
+import 'package:notes/savesystem/path.dart';
 
 class AllNotesPage extends StatefulWidget {
   const AllNotesPage({Key? key}) : super(key: key);
@@ -10,6 +13,8 @@ class AllNotesPage extends StatefulWidget {
 }
 
 class _AllNotesPageState extends State<AllNotesPage> {
+  List<NoteTileData> tileData = [];
+
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -63,9 +68,35 @@ class _AllNotesPageState extends State<AllNotesPage> {
           crossAxisCount: 5,
         ),
         padding: const EdgeInsets.all(2),
-        itemBuilder: (BuildContext context, int index) => const NoteTile(),
-        itemCount: 3,
+        itemBuilder: (BuildContext context, int idx) =>
+            NoteTile(data: tileData[idx]),
+        itemCount: tileData.length,
       ),
     );
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    loadAllNotes();
+  }
+
+  Future<void> loadAllNotes() async {
+    final path = await getSavePath();
+    final dta = await path
+        .list()
+        .where((fsentity) => fsentity.path.endsWith('.dbnote'))
+        .asyncMap((fsentity) async {
+      final lastmodified = (await fsentity.stat()).modified;
+      final filename = fsentity.path.split(Platform.pathSeparator).last;
+      final name = filename.substring(0, filename.length - 7);
+      return NoteTileData(name, filename, lastmodified);
+    }).toList();
+    dta.sort(
+      (a, b) => a.lastModified.isAfter(b.lastModified) ? -1 : 1,
+    );
+    setState(() {
+      tileData = dta;
+    });
   }
 }

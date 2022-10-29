@@ -51,6 +51,7 @@ class MyPainter extends CustomPainter {
         backgroundPaint);
 
     for (final stroke in controller.strokes) {
+      paint.color = stroke.color;
       for (int i = 0; i < stroke.points.length - 1; i++) {
         Offset pt1 = stroke.points[i].point;
         pt1 = _translatept(pt1, size);

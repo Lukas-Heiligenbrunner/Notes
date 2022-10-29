@@ -1,29 +1,22 @@
-import 'package:flutter/foundation.dart';
+import 'dart:io';
+
+import 'package:notes/savesystem/path.dart';
 import 'package:sqflite/sqflite.dart';
-import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 
 class NoteFile {
   late Database _db;
-  String filename;
+  String filepath;
 
   Database db() {
     return _db;
   }
 
-  NoteFile(this.filename);
+  NoteFile(this.filepath);
 
   Future<void> init() async {
-    String dbpath = filename;
-    if (defaultTargetPlatform == TargetPlatform.android ||
-        defaultTargetPlatform == TargetPlatform.iOS) {
-      dbpath = '${await getDatabasesPath()}/$filename';
-    } else {
-      // Change the default factory
-      databaseFactory = databaseFactoryFfi;
-    }
-
+    final path = (await getSavePath()).path + Platform.pathSeparator + filepath;
     _db = await openDatabase(
-      dbpath,
+      path,
       onCreate: (db, version) {
         return db.execute(
           'CREATE TABLE strokes(id integer primary key autoincrement, color INTEGER, elevation INTEGER);'

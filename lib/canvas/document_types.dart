@@ -9,6 +9,7 @@ class Stroke {
   double _maxy = double.negativeInfinity;
 
   final int id;
+  final Color color;
 
   @override
   String toString() {
@@ -33,8 +34,8 @@ class Stroke {
     return Rect.fromPoints(Offset(_minx, _miny), Offset(_maxx, _maxy));
   }
 
-  Stroke.fromPoints(this.points, this.id);
-  Stroke(this.id);
+  Stroke.fromPoints(this.points, this.id, this.color);
+  Stroke(this.id, this.color);
 }
 
 class Point {

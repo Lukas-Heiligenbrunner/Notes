@@ -1,9 +1,9 @@
 import 'dart:math';
 import 'dart:ui';
+import 'package:flutter/gestures.dart';
+import 'package:flutter/material.dart';
 
-import 'package:flutter/foundation.dart';
-import 'package:notes/savesystem/line_loader.dart';
-
+import '../savesystem/line_loader.dart';
 import '../savesystem/note_file.dart';
 import 'document_types.dart';
 import 'my_painter.dart';
@@ -46,29 +46,31 @@ class PaintController extends ChangeNotifier {
     return thickness;
   }
 
-  void pointDownEvent(
-      Offset offset, PointerDeviceKind pointer, double tilt) async {
-    if (_allowDrawWithFinger || pointer != PointerDeviceKind.touch) {
+  void pointDownEvent(Offset offset, PointerDownEvent e) async {
+    if (_allowedToDraw(e)) {
       // todo line drawn on edge where line left page
       if (!a4Page.contains(offset)) return;
 
       // todo handle other pens
-      if (activePen != Pen.pen) return;
+      if (activePen == Pen.eraser || activePen == Pen.selector) return;
 
       int strokeid = strokes.isNotEmpty ? strokes.last.id + 1 : 0;
       strokes.add(Stroke.fromPoints(
-          [Point(offset, _calcTiltedWidth(3.0, tilt))],
-          strokes.isNotEmpty ? strokes.last.id + 1 : 0));
+          [Point(offset, _calcTiltedWidth(3.0, e.tilt))],
+          strokeid,
+          activePen == Pen.pen
+              ? Colors.black26
+              : Colors.yellow.withOpacity(.5)));
       file.addStroke(strokeid);
 
       notifyListeners();
     }
   }
 
-  void pointUpEvent(PointerDeviceKind pointer) {
+  void pointUpEvent(PointerUpEvent e) {
     if (activePen == Pen.eraser) return;
 
-    if (_allowDrawWithFinger || pointer != PointerDeviceKind.touch) {
+    if (_allowedToDraw(e)) {
       final lastStroke = strokes.last;
       if (lastStroke.points.length <= 1) {
         // if the line consists only of one point (point) add endpoint as the same to allow drawing a line
@@ -79,12 +81,20 @@ class PaintController extends ChangeNotifier {
     }
   }
 
-  void pointMoveEvent(Offset offset, PointerDeviceKind pointer, double tilt) {
+  /// check if pointer event is allowed to draw points
+  bool _allowedToDraw(PointerEvent event) {
+    return (_allowDrawWithFinger && event.kind == PointerDeviceKind.touch) ||
+        event.kind == PointerDeviceKind.stylus ||
+        (event.kind == PointerDeviceKind.mouse &&
+            event.buttons == kPrimaryMouseButton);
+  }
+
+  void pointMoveEvent(Offset offset, PointerMoveEvent event) {
     if (!a4Page.contains(offset)) {
       return;
     }
 
-    if (_allowDrawWithFinger || pointer != PointerDeviceKind.touch) {
+    if (_allowedToDraw(event)) {
       switch (activePen) {
         case Pen.eraser:
           // todo dynamic eraser size
@@ -105,10 +115,11 @@ class PaintController extends ChangeNotifier {
           }
           break;
         case Pen.pen:
+        case Pen.highlighter:
           final pts = strokes.last.points;
           if (pts.last.point == offset) return;
 
-          double newWidth = _calcTiltedWidth(5.0, tilt);
+          double newWidth = _calcTiltedWidth(5.0, event.tilt);
           if (strokes.last.points.length > 1) {
             newWidth = _calcAngleDependentWidth(
                 pts.last, pts[pts.length - 2], newWidth);
@@ -117,9 +128,6 @@ class PaintController extends ChangeNotifier {
           Point p = Point(offset, newWidth);
           strokes.last.addPoint(p);
           file.addPoint(strokes.last.id, p);
-          break;
-        case Pen.highlighter:
-          // TODO: Handle this case.
           break;
         case Pen.selector:
           // TODO: Handle this case.

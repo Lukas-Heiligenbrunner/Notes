@@ -1,4 +1,4 @@
-import 'dart:ui';
+import 'package:flutter/material.dart';
 
 import 'note_file.dart';
 import '../canvas/document_types.dart';
@@ -15,7 +15,7 @@ extension LineLoading on NoteFile {
       final int csid = i['strokeid'] as int;
       if (csid != strokeid) {
         strokeid = csid;
-        strokes.add(Stroke(strokeid));
+        strokes.add(Stroke(strokeid, Colors.green));
       }
       final Point p = Point(
           Offset(i['x'] as double, i['y'] as double), i['thickness'] as double);

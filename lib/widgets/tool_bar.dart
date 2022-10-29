@@ -5,7 +5,7 @@ import 'package:iconify_flutter/iconify_flutter.dart';
 import 'package:iconify_flutter/icons/emojione_monotone.dart';
 import 'package:iconify_flutter/icons/jam.dart';
 
-import 'canvas/paint_controller.dart';
+import '../canvas/paint_controller.dart';
 import 'icon_material_button.dart';
 
 class ToolBar extends StatefulWidget {

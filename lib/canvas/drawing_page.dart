@@ -8,8 +8,8 @@ import 'my_painter.dart';
 import 'paint_controller.dart';
 import 'screen_document_mapping.dart';
 
-import '../icon_material_button.dart';
-import '../tool_bar.dart';
+import '../widgets/icon_material_button.dart';
+import '../widgets/tool_bar.dart';
 
 /// Handles input events and draws canvas element
 class DrawingPage extends StatefulWidget {

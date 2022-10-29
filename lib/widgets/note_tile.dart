@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
-import 'canvas/drawing_page.dart';
+import '../canvas/drawing_page.dart';
+import '../context/file_change_notifier.dart';
 
 class NoteTileData {
   final String name;
@@ -24,7 +26,9 @@ class NoteTile extends StatelessWidget {
           MaterialPageRoute(
             builder: (context) => DrawingPage(filePath: data.relativePath),
           ),
-        );
+        ).then((value) =>
+            Provider.of<FileChangeNotifier>(context, listen: false)
+                .loadAllNotes());
       },
       child: SizedBox(
         width: 100,

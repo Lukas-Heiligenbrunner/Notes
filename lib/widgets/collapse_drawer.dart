@@ -1,6 +1,8 @@
 import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 import 'package:flutter/material.dart';
-import 'package:notes/drawer_item.dart';
+import 'package:notes/context/file_change_notifier.dart';
+import 'package:notes/widgets/drawer_item.dart';
+import 'package:provider/provider.dart';
 
 enum View { all, shared, recycle, folders }
 
@@ -98,12 +100,14 @@ class _CollapseDrawerState extends State<CollapseDrawer>
                 Expanded(
                     child: ListView(
                   children: [
-                    DrawerItem(
-                        dta: ItemData('All Notes', Icons.book),
-                        collapsed: collapsed,
-                        endText: '7',
-                        active: widget.activePage == View.all,
-                        onTap: () => widget.onPageChange(View.all)),
+                    Consumer<FileChangeNotifier>(
+                      builder: (context, value, child) => DrawerItem(
+                          dta: ItemData('All Notes', Icons.book),
+                          collapsed: collapsed,
+                          endText: value.tiledata.length.toString(),
+                          active: widget.activePage == View.all,
+                          onTap: () => widget.onPageChange(View.all)),
+                    ),
                     DrawerItem(
                         dta: ItemData('Shared Notebooks', Icons.person_outline),
                         collapsed: collapsed,

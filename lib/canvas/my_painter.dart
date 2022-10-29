@@ -1,24 +1,32 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
+import 'package:notes/canvas/paint_controller.dart';
 import 'package:notes/canvas/screen_document_mapping.dart';
-
-import 'document_types.dart';
 
 final Rect a4Page =
     Rect.fromPoints(const Offset(.0, .0), const Offset(210, 210 * sqrt2));
 
 class MyPainter extends CustomPainter {
-  List<Stroke> strokes;
   double zoom;
   Offset offset;
   Size canvasSize;
+  PaintController controller;
+
+  late Pen activePen;
 
   MyPainter(
-      {required this.strokes,
-      required this.zoom,
+      {required this.zoom,
       required this.offset,
-      required this.canvasSize});
+      required this.canvasSize,
+      required this.controller})
+      : super(repaint: controller) {
+    activePen = controller.activePen;
+
+    controller.addListener(() {
+      activePen = controller.activePen;
+    });
+  }
 
   Offset _translatept(Offset pt, Size canvasSize) {
     final scale = calcPageDependentScale(zoom, a4Page, canvasSize);
@@ -42,7 +50,7 @@ class MyPainter extends CustomPainter {
             _translatept(a4Page.bottomRight, size)),
         backgroundPaint);
 
-    for (final stroke in strokes) {
+    for (final stroke in controller.strokes) {
       for (int i = 0; i < stroke.points.length - 1; i++) {
         Offset pt1 = stroke.points[i].point;
         pt1 = _translatept(pt1, size);
@@ -58,8 +66,6 @@ class MyPainter extends CustomPainter {
 
   @override
   bool shouldRepaint(MyPainter oldDelegate) {
-    return oldDelegate.strokes != strokes ||
-        oldDelegate.zoom != zoom ||
-        oldDelegate.offset != offset;
+    return oldDelegate.zoom != zoom || oldDelegate.offset != offset;
   }
 }

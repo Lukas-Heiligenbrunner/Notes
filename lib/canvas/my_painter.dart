@@ -12,8 +12,13 @@ class MyPainter extends CustomPainter {
   List<Stroke> strokes;
   double zoom;
   Offset offset;
+  Size canvasSize;
 
-  MyPainter({required this.strokes, required this.zoom, required this.offset});
+  MyPainter(
+      {required this.strokes,
+      required this.zoom,
+      required this.offset,
+      required this.canvasSize});
 
   Offset _translatept(Offset pt, Size canvasSize) {
     final scale = calcPageDependentScale(zoom, a4Page, canvasSize);
@@ -28,7 +33,10 @@ class MyPainter extends CustomPainter {
       ..color = Colors.blue
       ..strokeCap = StrokeCap.square;
 
-    canvas.drawColor(const Color(0xff3f3f3f), BlendMode.src);
+    // clipping canvas to reqired size
+    canvas.clipRect(Offset.zero & size);
+
+    canvas.drawColor(const Color(0xff6e6e6e), BlendMode.src);
     canvas.drawRect(
         Rect.fromPoints(_translatept(const Offset(0, .0), size),
             _translatept(a4Page.bottomRight, size)),

@@ -1,9 +1,15 @@
 import 'dart:math';
 import 'dart:ui';
+import 'package:adwaita_icons/adwaita_icons.dart';
+import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 import 'package:flutter/material.dart';
+import 'package:iconify_flutter/iconify_flutter.dart';
+import 'package:iconify_flutter/icons/emojione_monotone.dart';
+import 'package:iconify_flutter/icons/jam.dart';
 import 'package:notes/canvas/my_painter.dart';
 import 'package:notes/canvas/screen_document_mapping.dart';
 
+import '../icon_material_button.dart';
 import 'document_types.dart';
 
 class DrawingPage extends StatefulWidget {
@@ -38,17 +44,75 @@ class _DrawingPageState extends State<DrawingPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(backgroundColor: Colors.blueGrey, actions: [
-        // todo temp icon only
-        IconButton(
-          icon: const Icon(Icons.edit),
-          onPressed: () {
-            setState(() {
-              eraseractive = !eraseractive;
-            });
-          },
-        )
+        IconMaterialButton(
+          icon: const Icon(FluentIcons.book_open_48_filled),
+          color: const Color.fromRGBO(255, 255, 255, .85),
+          onPressed: () {},
+        ),
+        IconMaterialButton(
+          icon: const Icon(FluentIcons.document_one_page_24_regular),
+          color: const Color.fromRGBO(255, 255, 255, .85),
+          onPressed: () {},
+        ),
+        IconMaterialButton(
+          icon: const Icon(Icons.attachment_outlined),
+          color: const Color.fromRGBO(255, 255, 255, .85),
+          onPressed: () {},
+          rotation: -pi / 4,
+        ),
+        IconMaterialButton(
+          icon: const Icon(Icons.more_vert),
+          color: const Color.fromRGBO(255, 255, 255, .85),
+          onPressed: () {},
+        ),
       ]),
-      body: _buildCanvas(),
+      body: Row(
+        children: [
+          Container(
+            color: const Color(0xff3f3f3f),
+            width: 45,
+            child: Column(
+              children: [
+                const SizedBox(
+                  height: 10,
+                ),
+                IconMaterialButton(
+                  icon: const Iconify(EmojioneMonotone.fountain_pen, color: Color.fromRGBO(255, 255, 255, .85),),
+                  color: const Color.fromRGBO(255, 255, 255, .85),
+                  onPressed: () => setState(() => eraseractive = false),
+                  selected: !eraseractive,
+                  iconSize: 24,
+                ),
+                IconMaterialButton(
+                  icon: const Iconify(Jam.highlighter, color: Color.fromRGBO(255, 255, 255, .85),),
+                  color: const Color.fromRGBO(255, 255, 255, .85),
+                  onPressed: () => setState(() => eraseractive = false),
+                  selected: false,
+                  iconSize: 24,
+                ),
+                IconMaterialButton(
+                  icon: Transform.translate(
+                    offset: const Offset(-2.0, .0),
+                    child: const AdwaitaIcon(AdwaitaIcons.eraser2),
+                  ),
+                  color: const Color.fromRGBO(255, 255, 255, .85),
+                  onPressed: () => setState(() => eraseractive = true),
+                  iconSize: 24,
+                  selected: eraseractive,
+                ),
+                IconMaterialButton(
+                  icon: const Icon(FluentIcons.select_object_24_regular),
+                  color: const Color.fromRGBO(255, 255, 255, .85),
+                  onPressed: () => setState(() => eraseractive = false),
+                  selected: false,
+                  iconSize: 24,
+                ),
+              ],
+            ),
+          ),
+          Expanded(child: RepaintBoundary(child: _buildCanvas())),
+        ],
+      ),
     );
   }
 
@@ -155,6 +219,8 @@ class _DrawingPageState extends State<DrawingPage> {
   Widget _buildCanvas() {
     final size = MediaQuery.of(context).size;
 
+    final canvasSize = Size(size.width - 45, size.height);
+
     return Listener(
       behavior: HitTestBehavior.opaque,
       onPointerMove: (e) => _onPointerMove(e, size),
@@ -218,8 +284,12 @@ class _DrawingPageState extends State<DrawingPage> {
           print('tertiary button');
         },
         child: CustomPaint(
-          painter: MyPainter(strokes: _strokes, offset: offset, zoom: zoom),
-          size: Size.infinite,
+          painter: MyPainter(
+              strokes: _strokes,
+              offset: offset,
+              zoom: zoom,
+              canvasSize: canvasSize),
+          size: canvasSize,
         ),
       ),
     );

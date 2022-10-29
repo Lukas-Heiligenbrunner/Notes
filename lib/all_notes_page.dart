@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:notes/icon_material_button.dart';
 import 'package:notes/note_tile.dart';
 
 class AllNotesPage extends StatefulWidget {
@@ -27,38 +28,20 @@ class _AllNotesPageState extends State<AllNotesPage> {
                   color: Color.fromRGBO(255, 255, 255, .85), fontSize: 22),
             ),
             Expanded(child: Container()),
-            Material(
-              color: Colors.transparent,
-              shape: const CircleBorder(),
-              clipBehavior: Clip.hardEdge,
-              child: IconButton(
-                icon: const Icon(Icons.picture_as_pdf_outlined),
-                iconSize: 28,
-                color: const Color.fromRGBO(255, 255, 255, .85),
-                onPressed: () {},
-              ),
+            IconMaterialButton(
+              icon: const Icon(Icons.picture_as_pdf_outlined),
+              color: const Color.fromRGBO(255, 255, 255, .85),
+              onPressed: () {},
             ),
-            Material(
-              color: Colors.transparent,
-              shape: const CircleBorder(),
-              clipBehavior: Clip.hardEdge,
-              child: IconButton(
-                icon: const Icon(Icons.search),
-                iconSize: 28,
-                color: const Color.fromRGBO(255, 255, 255, .85),
-                onPressed: () {},
-              ),
+            IconMaterialButton(
+              icon: const Icon(Icons.search),
+              color: const Color.fromRGBO(255, 255, 255, .85),
+              onPressed: () {},
             ),
-            Material(
-              color: Colors.transparent,
-              shape: const CircleBorder(),
-              clipBehavior: Clip.hardEdge,
-              child: IconButton(
-                icon: const Icon(Icons.more_vert),
-                iconSize: 28,
-                color: const Color.fromRGBO(255, 255, 255, .85),
-                onPressed: () {},
-              ),
+            IconMaterialButton(
+              icon: const Icon(Icons.more_vert),
+              color: const Color.fromRGBO(255, 255, 255, .85),
+              onPressed: () {},
             ),
             const SizedBox(
               width: 15,

@@ -2,7 +2,9 @@ import 'dart:math';
 import 'dart:ui';
 
 import 'package:flutter/foundation.dart';
+import 'package:notes/savesystem/line_loader.dart';
 
+import '../savesystem/note_file.dart';
 import 'document_types.dart';
 import 'my_painter.dart';
 
@@ -12,6 +14,10 @@ class PaintController extends ChangeNotifier {
   Pen activePen = Pen.pen;
   List<Stroke> strokes = [];
   final bool _allowDrawWithFinger = false;
+
+  PaintController(this.file);
+
+  final NoteFile file;
 
   void changePen(Pen pen) {
     activePen = pen;
@@ -40,7 +46,8 @@ class PaintController extends ChangeNotifier {
     return thickness;
   }
 
-  void pointDownEvent(Offset offset, PointerDeviceKind pointer, double tilt) {
+  void pointDownEvent(
+      Offset offset, PointerDeviceKind pointer, double tilt) async {
     if (_allowDrawWithFinger || pointer != PointerDeviceKind.touch) {
       // todo line drawn on edge where line left page
       if (!a4Page.contains(offset)) return;
@@ -48,8 +55,12 @@ class PaintController extends ChangeNotifier {
       // todo handle other pens
       if (activePen != Pen.pen) return;
 
-      strokes
-          .add(Stroke.fromPoints([Point(offset, _calcTiltedWidth(3.0, tilt))]));
+      int strokeid = strokes.isNotEmpty ? strokes.last.id + 1 : 0;
+      strokes.add(Stroke.fromPoints(
+          [Point(offset, _calcTiltedWidth(3.0, tilt))],
+          strokes.isNotEmpty ? strokes.last.id + 1 : 0));
+      file.addStroke(strokeid);
+
       notifyListeners();
     }
   }
@@ -58,10 +69,11 @@ class PaintController extends ChangeNotifier {
     if (activePen == Pen.eraser) return;
 
     if (_allowDrawWithFinger || pointer != PointerDeviceKind.touch) {
-      if (strokes.last.points.length <= 1) {
+      final lastStroke = strokes.last;
+      if (lastStroke.points.length <= 1) {
         // if the line consists only of one point (point) add endpoint as the same to allow drawing a line
-        // todo maybe solve this in custompainter in future
-        strokes.last.points.add(strokes.last.points.last);
+        lastStroke.points.add(lastStroke.points.last);
+        file.addPoint(lastStroke.id, lastStroke.points.last);
         notifyListeners();
       }
     }
@@ -83,6 +95,7 @@ class PaintController extends ChangeNotifier {
               // check if eraser hit an point within its range
               for (final pt in stroke.points) {
                 if (eraserrect.contains(pt.point)) {
+                  file.removeStroke(stroke.id);
                   strokes.remove(stroke);
                   notifyListeners();
                   return;
@@ -101,7 +114,9 @@ class PaintController extends ChangeNotifier {
                 pts.last, pts[pts.length - 2], newWidth);
           }
 
-          strokes.last.addPoint(Point(offset, newWidth));
+          Point p = Point(offset, newWidth);
+          strokes.last.addPoint(p);
+          file.addPoint(strokes.last.id, p);
           break;
         case Pen.highlighter:
           // TODO: Handle this case.
@@ -112,5 +127,10 @@ class PaintController extends ChangeNotifier {
       }
       notifyListeners();
     }
+  }
+
+  Future<void> loadStrokesFromFile() async {
+    strokes = await file.loadStrokes();
+    notifyListeners();
   }
 }

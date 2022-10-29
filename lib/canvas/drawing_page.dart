@@ -2,6 +2,7 @@ import 'dart:math';
 import 'dart:ui';
 import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 import 'package:flutter/material.dart';
+import 'package:notes/savesystem/note_file.dart';
 import 'my_painter.dart';
 import 'paint_controller.dart';
 import 'screen_document_mapping.dart';
@@ -11,7 +12,10 @@ import '../tool_bar.dart';
 
 /// Handles input events and draws canvas element
 class DrawingPage extends StatefulWidget {
-  const DrawingPage({Key? key}) : super(key: key);
+  // path to the .dbnote file
+  final String filePath;
+
+  const DrawingPage({Key? key, required this.filePath}) : super(key: key);
 
   @override
   State<DrawingPage> createState() => _DrawingPageState();
@@ -22,16 +26,27 @@ class _DrawingPageState extends State<DrawingPage> {
   double basezoom = 1.0;
   Offset offset = const Offset(.0, .0);
 
-  PaintController controller = PaintController();
+  late PaintController controller;
+  late NoteFile noteFile = NoteFile(widget.filePath);
 
   @override
   void initState() {
     super.initState();
 
+    controller = PaintController(noteFile);
+    noteFile.init().then((value) => controller.loadStrokesFromFile());
+
     // todo might be weird behaviour if used with short side
     final screenWidth =
         (window.physicalSize.longestSide / window.devicePixelRatio);
     _calcNewPageOffset(const Offset(.0, .0), screenWidth - 45);
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+
+    noteFile.close();
   }
 
   @override

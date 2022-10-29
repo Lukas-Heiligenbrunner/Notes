@@ -8,6 +8,8 @@ class Stroke {
   double _miny = double.infinity;
   double _maxy = double.negativeInfinity;
 
+  final int id;
+
   @override
   String toString() {
     return 'Stroke{points: $points}';
@@ -17,18 +19,22 @@ class Stroke {
     points.add(point);
 
     // update bounding rect
-    if (point.point.dx < _minx) _minx = point.point.dx;
-    if (point.point.dx > _maxx) _maxx = point.point.dx;
-    if (point.point.dy < _miny) _miny = point.point.dy;
-    if (point.point.dy > _maxy) _maxy = point.point.dy;
+    _updateBoundingRect(point);
+  }
+
+  void _updateBoundingRect(Point p) {
+    if (p.point.dx < _minx) _minx = p.point.dx;
+    if (p.point.dx > _maxx) _maxx = p.point.dx;
+    if (p.point.dy < _miny) _miny = p.point.dy;
+    if (p.point.dy > _maxy) _maxy = p.point.dy;
   }
 
   Rect getBoundingRect() {
     return Rect.fromPoints(Offset(_minx, _miny), Offset(_maxx, _maxy));
   }
 
-  Stroke.fromPoints(this.points);
-  Stroke();
+  Stroke.fromPoints(this.points, this.id);
+  Stroke(this.id);
 }
 
 class Point {

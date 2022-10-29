@@ -1,4 +1,4 @@
-import 'package:flutter/cupertino.dart';
+import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 import 'package:flutter/material.dart';
 import 'package:notes/drawer_item.dart';
 
@@ -110,7 +110,8 @@ class _CollapseDrawerState extends State<CollapseDrawer>
                         active: widget.activePage == View.shared,
                         onTap: () => widget.onPageChange(View.shared)),
                     DrawerItem(
-                        dta: ItemData('Recycle bin', CupertinoIcons.trash),
+                        dta: ItemData(
+                            'Recycle bin', FluentIcons.delete_20_filled),
                         collapsed: collapsed,
                         active: widget.activePage == View.recycle,
                         onTap: () => widget.onPageChange(View.recycle)),

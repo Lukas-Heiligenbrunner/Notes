@@ -1,7 +1,8 @@
 import 'dart:io';
 
-import 'package:notes/savesystem/path.dart';
 import 'package:sqflite/sqflite.dart';
+
+import 'path.dart';
 
 class NoteFile {
   late Database _db;

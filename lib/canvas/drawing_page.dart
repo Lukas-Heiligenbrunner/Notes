@@ -1,22 +1,25 @@
 import 'dart:math';
 import 'dart:ui';
+
 import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:notes/savesystem/note_file.dart';
+
+import '../savesystem/note_file.dart';
+import '../widgets/icon_material_button.dart';
+import '../widgets/tool_bar.dart';
 import 'my_painter.dart';
 import 'paint_controller.dart';
 import 'screen_document_mapping.dart';
-
-import '../widgets/icon_material_button.dart';
-import '../widgets/tool_bar.dart';
 
 /// Handles input events and draws canvas element
 class DrawingPage extends StatefulWidget {
   // path to the .dbnote file
   final String filePath;
+  final String name;
 
-  const DrawingPage({Key? key, required this.filePath}) : super(key: key);
+  const DrawingPage({Key? key, required this.filePath, required this.name})
+      : super(key: key);
 
   @override
   State<DrawingPage> createState() => _DrawingPageState();
@@ -53,37 +56,40 @@ class _DrawingPageState extends State<DrawingPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(backgroundColor: Colors.blueGrey, actions: [
-        IconMaterialButton(
-          icon: const Icon(FluentIcons.book_open_48_filled),
-          color: const Color.fromRGBO(255, 255, 255, .85),
-          onPressed: () {
-            // todo implement
-          },
-        ),
-        IconMaterialButton(
-          icon: const Icon(FluentIcons.document_one_page_24_regular),
-          color: const Color.fromRGBO(255, 255, 255, .85),
-          onPressed: () {
-            // todo implement
-          },
-        ),
-        IconMaterialButton(
-          icon: const Icon(Icons.attachment_outlined),
-          color: const Color.fromRGBO(255, 255, 255, .85),
-          onPressed: () {
-            // todo implement
-          },
-          rotation: -pi / 4,
-        ),
-        IconMaterialButton(
-          icon: const Icon(Icons.more_vert),
-          color: const Color.fromRGBO(255, 255, 255, .85),
-          onPressed: () {
-            // todo implement
-          },
-        ),
-      ]),
+      appBar: AppBar(
+          backgroundColor: Colors.blueGrey,
+          title: Text(widget.name),
+          actions: [
+            IconMaterialButton(
+              icon: const Icon(FluentIcons.book_open_48_filled),
+              color: const Color.fromRGBO(255, 255, 255, .85),
+              onPressed: () {
+                // todo implement
+              },
+            ),
+            IconMaterialButton(
+              icon: const Icon(FluentIcons.document_one_page_24_regular),
+              color: const Color.fromRGBO(255, 255, 255, .85),
+              onPressed: () {
+                // todo implement
+              },
+            ),
+            IconMaterialButton(
+              icon: const Icon(Icons.attachment_outlined),
+              color: const Color.fromRGBO(255, 255, 255, .85),
+              onPressed: () {
+                // todo implement
+              },
+              rotation: -pi / 4,
+            ),
+            IconMaterialButton(
+              icon: const Icon(Icons.more_vert),
+              color: const Color.fromRGBO(255, 255, 255, .85),
+              onPressed: () {
+                // todo implement
+              },
+            ),
+          ]),
       body: Row(
         children: [
           ToolBar(
@@ -110,7 +116,7 @@ class _DrawingPageState extends State<DrawingPage> {
         setState(() {
           offset = Offset((-canvasWidth * zoom) + canvasWidth, newOffset.dy);
         });
-        print(offset);
+        debugPrint(offset.toString());
       } else {
         setState(() {
           offset = offset + delta;

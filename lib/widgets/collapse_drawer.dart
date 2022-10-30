@@ -1,8 +1,9 @@
 import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 import 'package:flutter/material.dart';
-import 'package:notes/context/file_change_notifier.dart';
-import 'package:notes/widgets/drawer_item.dart';
 import 'package:provider/provider.dart';
+
+import '../context/file_change_notifier.dart';
+import 'drawer_item.dart';
 
 enum View { all, shared, recycle, folders }
 

@@ -24,7 +24,8 @@ class NoteTile extends StatelessWidget {
         Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (context) => DrawingPage(filePath: data.relativePath),
+            builder: (context) =>
+                DrawingPage(filePath: data.relativePath, name: data.name),
           ),
         ).then((value) =>
             Provider.of<FileChangeNotifier>(context, listen: false)

@@ -1,8 +1,9 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
-import 'package:notes/canvas/paint_controller.dart';
-import 'package:notes/canvas/screen_document_mapping.dart';
+
+import 'paint_controller.dart';
+import 'screen_document_mapping.dart';
 
 final Rect a4Page =
     Rect.fromPoints(const Offset(.0, .0), const Offset(210, 210 * sqrt2));

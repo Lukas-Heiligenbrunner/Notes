@@ -35,6 +35,7 @@ class Stroke {
   }
 
   Stroke.fromPoints(this.points, this.id, this.color);
+
   Stroke(this.id, this.color);
 }
 

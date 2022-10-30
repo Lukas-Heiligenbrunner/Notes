@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-import 'note_file.dart';
 import '../canvas/document_types.dart';
+import 'note_file.dart';
 
 extension LineLoading on NoteFile {
   Future<List<Stroke>> loadStrokes() async {

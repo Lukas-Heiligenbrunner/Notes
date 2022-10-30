@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:notes/context/file_change_notifier.dart';
 import 'package:provider/provider.dart';
 
 import 'canvas/drawing_page.dart';
+import 'context/file_change_notifier.dart';
 import 'pages/all_notes_page.dart';
 import 'widgets/collapse_drawer.dart';
 
@@ -51,13 +51,17 @@ class _AppState extends State<App> {
         return FloatingActionButton(
           onPressed: () async {
             final now = DateTime.now();
-            String filename =
-                'note-${now.year}_${now.month}_${now.day}-${now.hour}_${now.minute}.dbnote';
+            final name =
+                'note-${now.year}_${now.month}_${now.day}-${now.hour}_${now.minute}';
+            final filename = '$name.dbnote';
 
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (ctx) => DrawingPage(filePath: filename),
+                builder: (ctx) => DrawingPage(
+                  filePath: filename,
+                  name: name,
+                ),
               ),
             ).then((value) =>
                 Provider.of<FileChangeNotifier>(context, listen: false)

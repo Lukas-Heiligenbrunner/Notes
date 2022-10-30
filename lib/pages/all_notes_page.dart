@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:notes/context/file_change_notifier.dart';
-import 'package:notes/widgets/icon_material_button.dart';
-import 'package:notes/widgets/note_tile.dart';
 import 'package:provider/provider.dart';
+
+import '../context/file_change_notifier.dart';
+import '../widgets/icon_material_button.dart';
+import '../widgets/note_tile.dart';
 
 class AllNotesPage extends StatefulWidget {
   const AllNotesPage({Key? key}) : super(key: key);

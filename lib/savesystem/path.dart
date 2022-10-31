@@ -7,8 +7,11 @@ Future<Directory> getSavePath() async {
   Directory dbpath;
   if (defaultTargetPlatform == TargetPlatform.android ||
       defaultTargetPlatform == TargetPlatform.iOS) {
+    final dir =
+        (await getExternalStorageDirectory())?.parent.parent.parent.parent ??
+            (await getApplicationDocumentsDirectory());
     dbpath = Directory(
-        '${(await getApplicationDocumentsDirectory()).path}${Platform.pathSeparator}notes');
+        '${dir.path}${Platform.pathSeparator}Documents${Platform.pathSeparator}notes');
   } else {
     dbpath = Directory(
         '${(await getApplicationDocumentsDirectory()).path}${Platform.pathSeparator}notes');

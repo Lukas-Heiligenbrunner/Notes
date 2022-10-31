@@ -12,6 +12,10 @@ class FileChangeNotifier extends ChangeNotifier {
 
   Future<List<NoteTileData>> loadAllNotes() async {
     final path = await getSavePath();
+    if (!(await path.exists())) {
+      await path.create(recursive: true);
+    }
+
     final dta = await path
         .list()
         .where((fsentity) => fsentity.path.endsWith('.dbnote'))

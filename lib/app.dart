@@ -20,9 +20,7 @@ class _AppState extends State<App> {
   Widget build(BuildContext context) {
     return ChangeNotifierProvider(
       create: (ctx) {
-        final notifier = FileChangeNotifier();
-        notifier.loadAllNotes();
-        return notifier;
+        return FileChangeNotifier()..loadAllNotes();
       },
       child: Scaffold(
         floatingActionButton: _fab(),
@@ -48,27 +46,28 @@ class _AppState extends State<App> {
     switch (activePage) {
       case View.all:
       case View.folders:
-        return FloatingActionButton(
-          onPressed: () async {
-            final now = DateTime.now();
-            final name =
-                'note-${now.year}_${now.month}_${now.day}-${now.hour}_${now.minute}';
-            final filename = '$name.dbnote';
+        return Consumer<FileChangeNotifier>(
+          builder: (ctx, notifier, child) => FloatingActionButton(
+            onPressed: () async {
+              final now = DateTime.now();
+              final name =
+                  'note-${now.year}_${now.month}_${now.day}-${now.hour}_${now.minute}_${now.second}';
+              final filename = '$name.dbnote';
 
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (ctx) => DrawingPage(
-                  filePath: filename,
-                  name: name,
+              Navigator.push(
+                ctx,
+                MaterialPageRoute(
+                  builder: (ctx) => DrawingPage(
+                    filePath: filename,
+                    name: name,
+                  ),
                 ),
-              ),
-            ).then((value) =>
-                Provider.of<FileChangeNotifier>(context, listen: false)
-                    .loadAllNotes());
-          },
-          backgroundColor: const Color(0xff3f3f3f),
-          child: const Icon(Icons.edit_calendar_outlined, color: Colors.orange),
+              ).then((v) => notifier.loadAllNotes());
+            },
+            backgroundColor: const Color(0xff3f3f3f),
+            child:
+                const Icon(Icons.edit_calendar_outlined, color: Colors.orange),
+          ),
         );
       default:
         return Container();

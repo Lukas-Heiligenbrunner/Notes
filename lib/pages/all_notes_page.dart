@@ -34,7 +34,9 @@ class _AllNotesPageState extends State<AllNotesPage> {
             IconMaterialButton(
               icon: const Icon(Icons.picture_as_pdf_outlined),
               color: const Color.fromRGBO(255, 255, 255, .85),
-              onPressed: () {},
+              onPressed: () async {
+                // todo implement pdf import
+              },
             ),
             IconMaterialButton(
               icon: const Icon(Icons.search),

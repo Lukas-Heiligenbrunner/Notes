@@ -128,6 +128,7 @@ class PaintController extends ChangeNotifier {
 
           Point p = Point(offset, newWidth);
           strokes.last.addPoint(p);
+          // todo do a batch commit per stroke
           file.addPoint(strokes.last.id, p);
           break;
         case Pen.selector:

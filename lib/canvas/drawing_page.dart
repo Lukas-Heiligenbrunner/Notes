@@ -5,6 +5,7 @@ import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 
+import '../export/export_pdf.dart';
 import '../savesystem/note_file.dart';
 import '../widgets/icon_material_button.dart';
 import '../widgets/tool_bar.dart';
@@ -72,6 +73,7 @@ class _DrawingPageState extends State<DrawingPage> {
               color: const Color.fromRGBO(255, 255, 255, .85),
               onPressed: () {
                 // todo implement
+                exportPDF(controller.strokes, '${widget.name}.pdf');
               },
             ),
             IconMaterialButton(

@@ -59,9 +59,8 @@ class MyPainter extends CustomPainter {
         Offset pt2 = stroke.points[i + 1].point;
         pt2 = _translatept(pt2, size);
 
-        // final strokewidth = _calcAngleDependentWidth(pt1, pt2, stroke.points[i].thickness);
         canvas.drawLine(
-            pt1, pt2, paint..strokeWidth = stroke.points[i].thickness);
+            pt1, pt2, paint..strokeWidth = stroke.points[i].thickness * zoom);
       }
     }
   }

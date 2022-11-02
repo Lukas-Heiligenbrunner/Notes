@@ -44,6 +44,6 @@ class NoteFile {
   Future<void> close() async {
     // shrink the db file size
     await _db.execute('VACUUM');
-    _db.close();
+    await _db.close();
   }
 }

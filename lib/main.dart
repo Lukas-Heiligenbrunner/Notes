@@ -11,15 +11,15 @@ void main() async {
       defaultTargetPlatform != TargetPlatform.iOS) {
     sqfliteFfiInit();
     databaseFactory = databaseFactoryFfi;
-  }
+  } else {
+    WidgetsFlutterBinding.ensureInitialized();
 
-  WidgetsFlutterBinding.ensureInitialized();
+    Map<Permission, PermissionStatus> statuses =
+        await [Permission.manageExternalStorage, Permission.storage].request();
 
-  Map<Permission, PermissionStatus> statuses =
-      await [Permission.manageExternalStorage, Permission.storage].request();
-
-  if (statuses.containsValue(PermissionStatus.denied)) {
-    // todo some error handling
+    if (statuses.containsValue(PermissionStatus.denied)) {
+      // todo some error handling
+    }
   }
 
   runApp(const MaterialApp(home: App()));

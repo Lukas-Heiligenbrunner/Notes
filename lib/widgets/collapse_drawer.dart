@@ -32,7 +32,8 @@ class _CollapseDrawerState extends State<CollapseDrawer>
 
     controller = AnimationController(
         vsync: this, duration: const Duration(milliseconds: 200));
-    collapseAnimation = Tween<double>(begin: 62, end: 300).animate(controller)
+    collapseAnimation = Tween<double>(begin: 62, end: 300)
+        .animate(CurvedAnimation(parent: controller, curve: Curves.easeInOut))
       ..addListener(() {
         setState(() {});
       });
@@ -41,13 +42,14 @@ class _CollapseDrawerState extends State<CollapseDrawer>
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: EdgeInsets.only(top: MediaQuery.of(context).viewPadding.top),
-      color: const Color(0xff0d0d0d),
+      padding:
+          EdgeInsets.only(top: MediaQuery.of(context).viewPadding.top + 15),
+      color: const Color(0xff000000),
       child: ClipRRect(
         borderRadius: const BorderRadius.only(
             topRight: Radius.circular(10), bottomRight: Radius.circular(10)),
         child: Container(
-          color: const Color(0xff3f3f3f),
+          color: const Color(0xff252525),
           child: ConstrainedBox(
             constraints: BoxConstraints.expand(width: collapseAnimation.value),
             child: Column(
@@ -103,7 +105,7 @@ class _CollapseDrawerState extends State<CollapseDrawer>
                   ],
                 ),
                 const SizedBox(
-                  height: 40,
+                  height: 20,
                 ),
                 Expanded(
                     child: ListView(

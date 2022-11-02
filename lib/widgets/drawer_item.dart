@@ -20,28 +20,29 @@ class DrawerItem extends StatelessWidget {
     return InkWell(
       onTap: onTap,
       child: Padding(
-        padding: const EdgeInsets.only(left: 9, top: 7, bottom: 7, right: 9),
+        padding: const EdgeInsets.only(left: 9, top: 2, bottom: 2, right: 9),
         child: ClipRRect(
           borderRadius: BorderRadius.circular(10),
           child: Container(
-            color: active ? const Color(0xff6e6e6e) : Colors.transparent,
+            color: active ? const Color(0xff4d4d4d) : Colors.transparent,
             child: Padding(
               padding:
-                  const EdgeInsets.only(left: 9, top: 7, bottom: 7, right: 9),
+                  const EdgeInsets.only(left: 9, top: 13, bottom: 13, right: 9),
               child: Row(
                 children: [
                   Icon(
                     dta.icon,
-                    size: 26,
-                    color: const Color(0xffdbdbdb),
+                    size: 23,
+                    color: const Color(0xffe5e5e5),
                   ),
                   if (!collapsed) ...[
                     const SizedBox(
-                      width: 10,
+                      width: 17,
                     ),
                     Text(
                       dta.name,
-                      style: const TextStyle(color: Color(0xffe9e9e9)),
+                      style: const TextStyle(
+                          color: Color(0xffe5e5e5), fontSize: 16),
                     ),
                     Expanded(child: Container()),
                     Text(

@@ -18,7 +18,7 @@ class _AllNotesPageState extends State<AllNotesPage> {
     return Column(
       children: [
         SizedBox(
-          height: 10 + MediaQuery.of(context).viewPadding.top,
+          height: 25 + MediaQuery.of(context).viewPadding.top,
         ),
         Row(
           children: [
@@ -28,7 +28,7 @@ class _AllNotesPageState extends State<AllNotesPage> {
             const Text(
               'All notes',
               style: TextStyle(
-                  color: Color.fromRGBO(255, 255, 255, .85), fontSize: 22),
+                  color: Color.fromRGBO(255, 255, 255, .85), fontSize: 21),
             ),
             Expanded(child: Container()),
             IconMaterialButton(
@@ -37,16 +37,19 @@ class _AllNotesPageState extends State<AllNotesPage> {
               onPressed: () async {
                 // todo implement pdf import
               },
+              iconSize: 22,
             ),
             IconMaterialButton(
               icon: const Icon(Icons.search),
               color: const Color.fromRGBO(255, 255, 255, .85),
               onPressed: () {},
+              iconSize: 22,
             ),
             IconMaterialButton(
               icon: const Icon(Icons.more_vert),
               color: const Color.fromRGBO(255, 255, 255, .85),
               onPressed: () {},
+              iconSize: 22,
             ),
             const SizedBox(
               width: 15,

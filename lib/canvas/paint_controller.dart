@@ -43,8 +43,8 @@ class PaintController extends ChangeNotifier {
     alpha /= (2 * pi * 2);
     alpha += .5;
 
-    double thickness = basetickness * alpha;
-    return thickness;
+    basetickness * alpha;
+    return basetickness;
   }
 
   void pointDownEvent(Offset offset, PointerDownEvent e) async {
@@ -60,7 +60,7 @@ class PaintController extends ChangeNotifier {
           [Point(offset, _calcTiltedWidth(3.0, e.tilt))],
           strokeid,
           activePen == Pen.pen
-              ? Colors.black26
+              ? const Color(0xFF444444)
               : Colors.yellow.withOpacity(.5)));
       file.addStroke(strokeid);
 

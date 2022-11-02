@@ -23,63 +23,68 @@ class _ToolBarState extends State<ToolBar> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      color: const Color(0xff3f3f3f),
-      width: 45,
-      child: Column(
-        children: [
-          const SizedBox(
-            height: 10,
-          ),
-          IconMaterialButton(
-            icon: const Iconify(
-              EmojioneMonotone.fountain_pen,
-              color: Color.fromRGBO(255, 255, 255, .85),
+      color: const Color(0xff252525),
+      width: 40,
+      child: Padding(
+        padding: const EdgeInsets.only(left: 3, right: 3),
+        child: Column(
+          children: [
+            const SizedBox(
+              height: 10,
             ),
-            color: const Color.fromRGBO(255, 255, 255, .85),
-            onPressed: () {
-              setState(() => activepen = Pen.pen);
-              widget.onPenChange(Pen.pen);
-            },
-            selected: activepen == Pen.pen,
-            iconSize: 24,
-          ),
-          IconMaterialButton(
-            icon: const Iconify(
-              Jam.highlighter,
-              color: Color.fromRGBO(255, 255, 255, .85),
+            IconMaterialButton(
+              icon: const Iconify(
+                EmojioneMonotone.fountain_pen,
+                size: 20,
+                color: Color.fromRGBO(255, 255, 255, .85),
+              ),
+              color: const Color.fromRGBO(255, 255, 255, .85),
+              onPressed: () {
+                setState(() => activepen = Pen.pen);
+                widget.onPenChange(Pen.pen);
+              },
+              selected: activepen == Pen.pen,
+              iconSize: 20,
             ),
-            color: const Color.fromRGBO(255, 255, 255, .85),
-            onPressed: () {
-              setState(() => activepen = Pen.highlighter);
-              widget.onPenChange(Pen.highlighter);
-            },
-            selected: activepen == Pen.highlighter,
-            iconSize: 24,
-          ),
-          IconMaterialButton(
-            icon: Transform.translate(
-              offset: const Offset(-2.0, .0),
-              child: const AdwaitaIcon(AdwaitaIcons.eraser2),
+            IconMaterialButton(
+              icon: const Iconify(
+                Jam.highlighter,
+                size: 20,
+                color: Color.fromRGBO(255, 255, 255, .85),
+              ),
+              color: const Color.fromRGBO(255, 255, 255, .85),
+              onPressed: () {
+                setState(() => activepen = Pen.highlighter);
+                widget.onPenChange(Pen.highlighter);
+              },
+              selected: activepen == Pen.highlighter,
+              iconSize: 20,
             ),
-            color: const Color.fromRGBO(255, 255, 255, .85),
-            onPressed: () {
-              setState(() => activepen = Pen.eraser);
-              widget.onPenChange(Pen.eraser);
-            },
-            iconSize: 24,
-            selected: activepen == Pen.eraser,
-          ),
-          IconMaterialButton(
-            icon: const Icon(FluentIcons.select_object_24_regular),
-            color: const Color.fromRGBO(255, 255, 255, .85),
-            onPressed: () {
-              setState(() => activepen = Pen.selector);
-              widget.onPenChange(Pen.selector);
-            },
-            selected: activepen == Pen.selector,
-            iconSize: 24,
-          ),
-        ],
+            IconMaterialButton(
+              icon: Transform.translate(
+                offset: const Offset(-2.0, .0),
+                child: const AdwaitaIcon(AdwaitaIcons.eraser2),
+              ),
+              color: const Color.fromRGBO(255, 255, 255, .85),
+              onPressed: () {
+                setState(() => activepen = Pen.eraser);
+                widget.onPenChange(Pen.eraser);
+              },
+              iconSize: 20,
+              selected: activepen == Pen.eraser,
+            ),
+            IconMaterialButton(
+              icon: const Icon(FluentIcons.select_object_24_regular),
+              color: const Color.fromRGBO(255, 255, 255, .85),
+              onPressed: () {
+                setState(() => activepen = Pen.selector);
+                widget.onPenChange(Pen.selector);
+              },
+              selected: activepen == Pen.selector,
+              iconSize: 20,
+            ),
+          ],
+        ),
       ),
     );
   }

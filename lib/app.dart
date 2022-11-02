@@ -33,7 +33,7 @@ class _AppState extends State<App> {
             ),
             Expanded(
                 child: Container(
-              color: const Color(0xff0d0d0d),
+              color: const Color(0xff000000),
               child: _buildPage(),
             ))
           ],
@@ -65,8 +65,8 @@ class _AppState extends State<App> {
               ).then((v) => notifier.loadAllNotes());
             },
             backgroundColor: const Color(0xff3f3f3f),
-            child:
-                const Icon(Icons.edit_calendar_outlined, color: Colors.orange),
+            child: const Icon(Icons.edit_calendar_outlined,
+                color: Color(0xffff7300)),
           ),
         );
       default:

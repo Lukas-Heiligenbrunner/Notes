@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../context/file_change_notifier.dart';
+import '../pages/settings_page.dart';
 import 'drawer_item.dart';
 
 enum View { all, shared, recycle, folders }
@@ -86,7 +87,13 @@ class _CollapseDrawerState extends State<CollapseDrawer>
                           icon: const Icon(Icons.settings_outlined),
                           iconSize: 26,
                           color: const Color(0xffa8a8a8),
-                          onPressed: () {},
+                          onPressed: () {
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => const SettingsPage(),
+                                ));
+                          },
                         ),
                       ),
                       const SizedBox(

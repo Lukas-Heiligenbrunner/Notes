@@ -9,6 +9,8 @@ flutter_build_android:
     - flutter packages get
     - flutter clean
   script:
+    - cd gen && flutter pub get
+    - dart run metagen.dart && cd ..
     - flutter build apk --target-platform android-arm64
     - mv build/app/outputs/apk/release/app-release.apk ./notes.apk
   artifacts:
@@ -22,6 +24,8 @@ linux_build:
     - apt-get install -y --no-install-recommends cmake ninja-build clang build-essential pkg-config libgtk-3-dev liblzma-dev lcov libvlc-dev vlc libsecret-1-dev libjsoncpp-dev
     - flutter config --enable-linux-desktop
     - flutter packages get
+    - cd gen && flutter pub get
+    - dart run metagen.dart && cd ..
     - flutter build linux
   artifacts:
     paths:

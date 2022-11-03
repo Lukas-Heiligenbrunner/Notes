@@ -22,5 +22,8 @@ void main() async {
     }
   }
 
-  runApp(const MaterialApp(home: App()));
+  runApp(MaterialApp(
+    home: const App(),
+    theme: ThemeData(appBarTheme: const AppBarTheme(color: Colors.blueGrey)),
+  ));
 }

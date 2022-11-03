@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:provider/provider.dart';
 
 import '../context/file_change_notifier.dart';
 import '../widgets/icon_material_button.dart';
 import '../widgets/note_tile.dart';
+import '../widgets/wip_toast.dart';
 
 class AllNotesPage extends StatefulWidget {
   const AllNotesPage({Key? key}) : super(key: key);
@@ -13,6 +15,14 @@ class AllNotesPage extends StatefulWidget {
 }
 
 class _AllNotesPageState extends State<AllNotesPage> {
+  FToast fToast = FToast();
+
+  @override
+  void initState() {
+    super.initState();
+    fToast.init(context);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -36,19 +46,36 @@ class _AllNotesPageState extends State<AllNotesPage> {
               color: const Color.fromRGBO(255, 255, 255, .85),
               onPressed: () async {
                 // todo implement pdf import
+                fToast.showToast(
+                  child: const WIPToast(),
+                  gravity: ToastGravity.BOTTOM,
+                  toastDuration: const Duration(seconds: 2),
+                );
               },
               iconSize: 22,
             ),
             IconMaterialButton(
               icon: const Icon(Icons.search),
               color: const Color.fromRGBO(255, 255, 255, .85),
-              onPressed: () {},
+              onPressed: () {
+                fToast.showToast(
+                  child: const WIPToast(),
+                  gravity: ToastGravity.BOTTOM,
+                  toastDuration: const Duration(seconds: 2),
+                );
+              },
               iconSize: 22,
             ),
             IconMaterialButton(
               icon: const Icon(Icons.more_vert),
               color: const Color.fromRGBO(255, 255, 255, .85),
-              onPressed: () {},
+              onPressed: () {
+                fToast.showToast(
+                  child: const WIPToast(),
+                  gravity: ToastGravity.BOTTOM,
+                  toastDuration: const Duration(seconds: 2),
+                );
+              },
               iconSize: 22,
             ),
             const SizedBox(
@@ -57,7 +84,11 @@ class _AllNotesPageState extends State<AllNotesPage> {
           ],
         ),
         Row(
-          children: const [Text('date modified..')],
+          children: const [
+            SizedBox(
+              height: 18,
+            )
+          ],
         ),
         _buildNoteTiles()
       ],

@@ -79,20 +79,30 @@ class _AppState extends State<App> {
       case View.all:
         return const AllNotesPage();
       case View.shared:
-        return const Text(
-          'shared notebooks WIP',
-          style: TextStyle(color: Colors.white),
-        );
       case View.recycle:
-        return const Text(
-          'recycle bin WIP',
-          style: TextStyle(color: Colors.white),
-        );
       case View.folders:
-        return const Text(
-          'Folders WIP',
-          style: TextStyle(color: Colors.white),
-        );
+        return _renderWIP();
     }
+  }
+
+  Widget _renderWIP() {
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: const [
+        Icon(Icons.warning_amber, color: Color(0xffe5e5e5), size: 56),
+        SizedBox(
+          height: 10,
+        ),
+        Text('Not Implemented', style: TextStyle(color: Color(0xffe5e5e5))),
+        SizedBox(
+          height: 10,
+        ),
+        Text('Work in progress!',
+            style: TextStyle(
+                color: Color(0xffe5e5e5),
+                fontWeight: FontWeight.bold,
+                fontSize: 16))
+      ],
+    );
   }
 }

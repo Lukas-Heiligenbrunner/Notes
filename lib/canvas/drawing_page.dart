@@ -54,13 +54,9 @@ class _DrawingPageState extends State<DrawingPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-          backgroundColor: Colors.blueGrey,
-          title: Text(widget.meta.name),
-          actions: [
-            DrawingPageTopActions(
-                controller: controller, noteMetaData: widget.meta)
-          ]),
+      appBar: AppBar(title: Text(widget.meta.name), actions: [
+        DrawingPageTopActions(controller: controller, noteMetaData: widget.meta)
+      ]),
       body: Row(
         children: [
           ToolBar(

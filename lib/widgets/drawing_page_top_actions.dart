@@ -3,6 +3,7 @@ import 'dart:math';
 import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'wip_toast.dart';
 
 import '../canvas/document_types.dart';
 import '../canvas/paint_controller.dart';
@@ -31,6 +32,11 @@ class _DrawingPageTopActionsState extends State<DrawingPageTopActions> {
         color: const Color.fromRGBO(255, 255, 255, .85),
         onPressed: () {
           // todo implement
+          fToast.showToast(
+            child: const WIPToast(),
+            gravity: ToastGravity.BOTTOM,
+            toastDuration: const Duration(seconds: 2),
+          );
         },
       ),
       IconMaterialButton(
@@ -38,6 +44,11 @@ class _DrawingPageTopActionsState extends State<DrawingPageTopActions> {
         color: const Color.fromRGBO(255, 255, 255, .85),
         onPressed: () {
           // todo implement
+          fToast.showToast(
+            child: const WIPToast(),
+            gravity: ToastGravity.BOTTOM,
+            toastDuration: const Duration(seconds: 2),
+          );
         },
       ),
       IconMaterialButton(
@@ -45,6 +56,11 @@ class _DrawingPageTopActionsState extends State<DrawingPageTopActions> {
         color: const Color.fromRGBO(255, 255, 255, .85),
         onPressed: () {
           // todo implement
+          fToast.showToast(
+            child: const WIPToast(),
+            gravity: ToastGravity.BOTTOM,
+            toastDuration: const Duration(seconds: 2),
+          );
         },
         rotation: -pi / 4,
       ),
@@ -60,19 +76,33 @@ class _DrawingPageTopActionsState extends State<DrawingPageTopActions> {
               shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(16)),
               items: [
-                const PopupMenuItem<int>(
+                PopupMenuItem<int>(
                   value: 0,
-                  child: Text(
+                  child: const Text(
                     'Add to',
                     style: TextStyle(color: Color(0xffe5e5e5)),
                   ),
+                  onTap: () {
+                    fToast.showToast(
+                      child: const WIPToast(),
+                      gravity: ToastGravity.BOTTOM,
+                      toastDuration: const Duration(seconds: 2),
+                    );
+                  },
                 ),
-                const PopupMenuItem<int>(
+                PopupMenuItem<int>(
                   value: 0,
-                  child: Text(
+                  child: const Text(
                     'Tags',
                     style: TextStyle(color: Color(0xffe5e5e5)),
                   ),
+                  onTap: () {
+                    fToast.showToast(
+                      child: const WIPToast(),
+                      gravity: ToastGravity.BOTTOM,
+                      toastDuration: const Duration(seconds: 2),
+                    );
+                  },
                 ),
                 PopupMenuItem<int>(
                   value: 0,
@@ -115,12 +145,19 @@ class _DrawingPageTopActionsState extends State<DrawingPageTopActions> {
                     );
                   },
                 ),
-                const PopupMenuItem<int>(
+                PopupMenuItem<int>(
                   value: 0,
-                  child: Text(
+                  child: const Text(
                     'Print',
                     style: TextStyle(color: Color(0xffe5e5e5)),
                   ),
+                  onTap: () {
+                    fToast.showToast(
+                      child: const WIPToast(),
+                      gravity: ToastGravity.BOTTOM,
+                      toastDuration: const Duration(seconds: 2),
+                    );
+                  },
                 ),
               ]);
         },

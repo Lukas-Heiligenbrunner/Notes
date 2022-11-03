@@ -31,20 +31,26 @@ class PaintController extends ChangeNotifier {
   }
 
   double _calcAngleDependentWidth(Point pt1, Point pt2, double basetickness) {
-    double dx = pt2.point.dx - pt1.point.dx;
-    double dy = pt2.point.dy - pt1.point.dy;
+    final delta = pt2.point - pt1.point;
+    final normalizedDelta =
+        delta / sqrt(delta.dx * delta.dx + delta.dy * delta.dy);
 
-    // todo those deltas to small to get an accurate direction!
-
-    double alpha = atan(dx / dy);
-    // alpha has range from 0 - 2pi
-    // we want 0.5 -1;
-
-    alpha /= (2 * pi * 2);
+    double alpha = asin(normalizedDelta.dy);
+    // range [-pi,pi]
+    alpha += (3 * pi / 4);
+    // range [0,inf]
+    alpha = alpha % (2 * pi);
+    // range [0,2pi]
+    alpha -= pi;
+    // range [-pi,pi]
+    alpha = alpha.abs();
+    // range [0,pi]
+    alpha /= pi;
+    // range [0,1]
     alpha += .5;
+    // range [.5,1.5]
 
-    basetickness * alpha;
-    return basetickness;
+    return basetickness * alpha;
   }
 
   void pointDownEvent(Offset offset, PointerDownEvent e) async {
@@ -121,9 +127,11 @@ class PaintController extends ChangeNotifier {
           if (pts.last.point == offset) return;
 
           double newWidth = _calcTiltedWidth(5.0, event.tilt);
-          if (strokes.last.points.length > 1) {
+          if (pts.length > 1) {
             newWidth = _calcAngleDependentWidth(
-                pts.last, pts[pts.length - 2], newWidth);
+                pts.last,
+                pts[pts.length - (pts.length > 5 ? 5 : pts.length - 1)],
+                newWidth);
           }
 
           Point p = Point(offset, newWidth);

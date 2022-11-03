@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:flutter/widgets.dart';
 import 'package:sqflite/sqflite.dart';
 
 import 'path.dart';
@@ -19,7 +20,7 @@ class NoteFile {
     _db = await openDatabase(
       path,
       onCreate: (db, version) async {
-        Batch batch = db.batch();
+        final batch = db.batch();
 
         batch.execute('DROP TABLE IF EXISTS strokes;');
         batch.execute('DROP TABLE IF EXISTS points;');
@@ -43,7 +44,11 @@ class NoteFile {
 
   Future<void> close() async {
     // shrink the db file size
-    await _db.execute('VACUUM');
-    await _db.close();
+    if (_db.isOpen) {
+      await _db.execute('VACUUM');
+      await _db.close();
+    } else {
+      debugPrint('db file unexpectedly closed before shrinking');
+    }
   }
 }

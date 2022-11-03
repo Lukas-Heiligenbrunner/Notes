@@ -40,7 +40,8 @@ class MyPainter extends CustomPainter {
   void paint(Canvas canvas, Size size) {
     var paint = Paint()
       ..color = Colors.blue
-      ..strokeCap = StrokeCap.square;
+      ..strokeCap = StrokeCap.square
+      ..isAntiAlias = true;
 
     // clipping canvas to reqired size
     canvas.clipRect(Offset.zero & size);
@@ -59,8 +60,24 @@ class MyPainter extends CustomPainter {
         Offset pt2 = stroke.points[i + 1].point;
         pt2 = _translatept(pt2, size);
 
-        canvas.drawLine(
-            pt1, pt2, paint..strokeWidth = stroke.points[i].thickness * zoom);
+        final zoomedthickness = stroke.points[i].thickness * zoom;
+
+        // only temporary solution to differ from highlighter and pen
+        if (stroke.color.opacity != 1.0) {
+          final off = Offset(zoomedthickness / 2, zoomedthickness / 2);
+          canvas.drawPath(
+              Path()
+                ..moveTo((pt1 - off).dx, (pt1 - off).dy)
+                ..lineTo((pt1 + off).dx, (pt1 + off).dy)
+                ..lineTo((pt2 + off).dx, (pt2 + off).dy)
+                ..lineTo((pt2 - off).dx, (pt2 - off).dy)
+                ..lineTo((pt1 - off).dx, (pt1 - off).dy),
+              paint
+                ..style = PaintingStyle.fill
+                ..strokeWidth = 0);
+        } else {
+          canvas.drawLine(pt1, pt2, paint..strokeWidth = zoomedthickness);
+        }
       }
     }
   }

@@ -62,19 +62,20 @@ class PaintController extends ChangeNotifier {
       if (activePen == Pen.eraser || activePen == Pen.selector) return;
 
       int strokeid = strokes.isNotEmpty ? strokes.last.id + 1 : 0;
+      final color = activePen == Pen.pen
+          ? const Color(0xFF444444)
+          : Colors.yellow.withOpacity(.3);
       strokes.add(Stroke.fromPoints(
-          [Point(offset, _calcTiltedWidth(3.0, e.tilt))],
-          strokeid,
-          activePen == Pen.pen
-              ? const Color(0xFF444444)
-              : Colors.yellow.withOpacity(.5)));
-      file.addStroke(strokeid);
+          [Point(offset, _calcTiltedWidth(3.0, e.tilt))], strokeid, color));
+      file.addStroke(strokeid, color);
       notifyListeners();
     }
   }
 
   void pointUpEvent(PointerUpEvent e) {
     if (activePen == Pen.eraser) return;
+
+    // pointerupevent doesn't deliver correct event button
     if (_allowedToDraw(e.kind, 1)) {
       final lastStroke = strokes.last;
       if (lastStroke.points.length <= 1) {
@@ -122,20 +123,24 @@ class PaintController extends ChangeNotifier {
           }
           break;
         case Pen.pen:
-        case Pen.highlighter:
           final pts = strokes.last.points;
+          // avoid duplicates
           if (pts.last.point == offset) return;
 
-          double newWidth = _calcTiltedWidth(5.0, event.tilt);
+          double newWidth = _calcTiltedWidth(4.0, event.tilt);
           if (pts.length > 1) {
             newWidth = _calcAngleDependentWidth(pts.last,
                 pts[pts.length - (pts.length > 5 ? 5 : pts.length)], newWidth);
           }
 
-          Point p = Point(offset, newWidth);
-          strokes.last.addPoint(p);
-          // // todo do a batch commit per stroke
-          // file.addPoint(strokes.last.id, p);
+          strokes.last.addPoint(Point(offset, newWidth));
+          break;
+        case Pen.highlighter:
+          final pts = strokes.last.points;
+          // avoid duplicates
+          if (pts.last.point == offset) return;
+
+          strokes.last.addPoint(Point(offset, 15.0));
           break;
         case Pen.selector:
           // TODO: Handle this case.

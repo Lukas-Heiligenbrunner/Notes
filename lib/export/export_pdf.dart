@@ -47,9 +47,9 @@ void exportPDF(List<Stroke> strokes, String name) async {
 
   const PdfPageFormat a4 = PdfPageFormat(_a4width, _a4height);
 
-  pdf.addPage(pw.MultiPage(
+  pdf.addPage(pw.Page(
     pageFormat: a4,
-    build: (context) => [_StrokePDFPaint(strokes)],
+    build: (context) => _StrokePDFPaint(strokes),
   ));
 
   final path = await getSavePath();

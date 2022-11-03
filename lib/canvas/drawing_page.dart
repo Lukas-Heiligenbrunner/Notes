@@ -39,6 +39,7 @@ class _DrawingPageState extends State<DrawingPage> {
     super.initState();
 
     controller = PaintController(noteFile);
+    debugPrint('initializing strokes from file');
     noteFile.init().then((value) => controller.loadStrokesFromFile());
 
     // todo might be weird behaviour if used with short side

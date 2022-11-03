@@ -54,7 +54,7 @@ class PaintController extends ChangeNotifier {
   }
 
   void pointDownEvent(Offset offset, PointerDownEvent e) async {
-    if (_allowedToDraw(e)) {
+    if (_allowedToDraw(e.kind, e.buttons)) {
       // todo line drawn on edge where line left page
       if (!a4Page.contains(offset)) return;
 
@@ -69,31 +69,31 @@ class PaintController extends ChangeNotifier {
               ? const Color(0xFF444444)
               : Colors.yellow.withOpacity(.5)));
       file.addStroke(strokeid);
-
       notifyListeners();
     }
   }
 
   void pointUpEvent(PointerUpEvent e) {
     if (activePen == Pen.eraser) return;
-
-    if (_allowedToDraw(e)) {
+    if (_allowedToDraw(e.kind, 1)) {
       final lastStroke = strokes.last;
       if (lastStroke.points.length <= 1) {
         // if the line consists only of one point (point) add endpoint as the same to allow drawing a line
         lastStroke.points.add(lastStroke.points.last);
         file.addPoint(lastStroke.id, lastStroke.points.last);
         notifyListeners();
+      } else {
+        debugPrint('adding points to db');
+        file.addPoints(lastStroke.id, lastStroke.points);
       }
     }
   }
 
   /// check if pointer event is allowed to draw points
-  bool _allowedToDraw(PointerEvent event) {
-    return (_allowDrawWithFinger && event.kind == PointerDeviceKind.touch) ||
-        event.kind == PointerDeviceKind.stylus ||
-        (event.kind == PointerDeviceKind.mouse &&
-            event.buttons == kPrimaryMouseButton);
+  bool _allowedToDraw(PointerDeviceKind kind, int button) {
+    return (_allowDrawWithFinger && kind == PointerDeviceKind.touch) ||
+        kind == PointerDeviceKind.stylus ||
+        (kind == PointerDeviceKind.mouse && button == kPrimaryMouseButton);
   }
 
   void pointMoveEvent(Offset offset, PointerMoveEvent event) {
@@ -101,7 +101,7 @@ class PaintController extends ChangeNotifier {
       return;
     }
 
-    if (_allowedToDraw(event)) {
+    if (_allowedToDraw(event.kind, event.buttons)) {
       switch (activePen) {
         case Pen.eraser:
           // todo dynamic eraser size
@@ -128,16 +128,14 @@ class PaintController extends ChangeNotifier {
 
           double newWidth = _calcTiltedWidth(5.0, event.tilt);
           if (pts.length > 1) {
-            newWidth = _calcAngleDependentWidth(
-                pts.last,
-                pts[pts.length - (pts.length > 5 ? 5 : pts.length - 1)],
-                newWidth);
+            newWidth = _calcAngleDependentWidth(pts.last,
+                pts[pts.length - (pts.length > 5 ? 5 : pts.length)], newWidth);
           }
 
           Point p = Point(offset, newWidth);
           strokes.last.addPoint(p);
-          // todo do a batch commit per stroke
-          file.addPoint(strokes.last.id, p);
+          // // todo do a batch commit per stroke
+          // file.addPoint(strokes.last.id, p);
           break;
         case Pen.selector:
           // TODO: Handle this case.
@@ -149,6 +147,7 @@ class PaintController extends ChangeNotifier {
 
   Future<void> loadStrokesFromFile() async {
     strokes = await file.loadStrokes();
+    debugPrint('finished loading strokes from file');
     notifyListeners();
   }
 }

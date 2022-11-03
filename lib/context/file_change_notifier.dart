@@ -26,7 +26,7 @@ class FileChangeNotifier extends ChangeNotifier {
       return NoteTileData(name, filename, lastmodified);
     }).toList();
     dta.sort(
-      (a, b) => a.lastModified.compareTo(b.lastModified),
+      (a, b) => b.lastModified.compareTo(a.lastModified),
     );
     notifyListeners();
     tiledata = dta;

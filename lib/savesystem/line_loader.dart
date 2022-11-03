@@ -40,8 +40,23 @@ extension LineLoading on NoteFile {
     });
   }
 
+  Future<void> addPoints(int strokeid, List<Point> pts) async {
+    final batch = db().batch();
+    for (final p in pts) {
+      batch.insert('points', {
+        'x': p.point.dx,
+        'y': p.point.dy,
+        'thickness': p.thickness,
+        'strokeid': strokeid
+      });
+    }
+    await batch.commit();
+  }
+
   Future<void> removeStroke(int id) async {
-    await db().delete('strokes', where: 'id = $id');
-    await db().delete('points', where: 'strokeid = $id');
+    final batch = db().batch();
+    batch.delete('strokes', where: 'id = $id');
+    batch.delete('points', where: 'strokeid = $id');
+    await batch.commit();
   }
 }

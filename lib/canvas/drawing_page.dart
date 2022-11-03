@@ -1,13 +1,10 @@
-import 'dart:math';
 import 'dart:ui';
 
-import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 
-import '../export/export_pdf.dart';
 import '../savesystem/note_file.dart';
-import '../widgets/icon_material_button.dart';
+import '../widgets/drawing_page_top_actions.dart';
 import '../widgets/tool_bar.dart';
 import 'my_painter.dart';
 import 'paint_controller.dart';
@@ -62,36 +59,7 @@ class _DrawingPageState extends State<DrawingPage> {
           backgroundColor: Colors.blueGrey,
           title: Text(widget.name),
           actions: [
-            IconMaterialButton(
-              icon: const Icon(FluentIcons.book_open_48_filled),
-              color: const Color.fromRGBO(255, 255, 255, .85),
-              onPressed: () {
-                // todo implement
-              },
-            ),
-            IconMaterialButton(
-              icon: const Icon(FluentIcons.document_one_page_24_regular),
-              color: const Color.fromRGBO(255, 255, 255, .85),
-              onPressed: () {
-                // todo implement
-                exportPDF(controller.strokes, '${widget.name}.pdf');
-              },
-            ),
-            IconMaterialButton(
-              icon: const Icon(Icons.attachment_outlined),
-              color: const Color.fromRGBO(255, 255, 255, .85),
-              onPressed: () {
-                // todo implement
-              },
-              rotation: -pi / 4,
-            ),
-            IconMaterialButton(
-              icon: const Icon(Icons.more_vert),
-              color: const Color.fromRGBO(255, 255, 255, .85),
-              onPressed: () {
-                // todo implement
-              },
-            ),
+            DrawingPageTopActions(controller: controller, noteName: widget.name)
           ]),
       body: Row(
         children: [

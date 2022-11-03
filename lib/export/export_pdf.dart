@@ -28,9 +28,9 @@ class _StrokePDFPaint extends pw.Widget {
       context.canvas.setStrokeColor(PdfColor.fromInt(stroke.color.value));
       for (int i = 0; i < stroke.points.length - 1; i++) {
         Offset pt1 = stroke.points[i].point * PdfPageFormat.mm;
-        pt1 = Offset(pt1.dx, _a4width - pt1.dy);
+        pt1 = Offset(pt1.dx, _a4height - pt1.dy);
         Offset pt2 = stroke.points[i + 1].point * PdfPageFormat.mm;
-        pt2 = Offset(pt2.dx, _a4width - pt2.dy);
+        pt2 = Offset(pt2.dx, _a4height - pt2.dy);
 
         context.canvas.setLineWidth(stroke.points[i].thickness);
         context.canvas.drawLine(pt1.dx, pt1.dy, pt2.dx, pt2.dy);
@@ -42,8 +42,8 @@ class _StrokePDFPaint extends pw.Widget {
   _StrokePDFPaint(this.strokes);
 }
 
-void exportPDF(List<Stroke> strokes, String name) async {
-  final pdf = pw.Document();
+Future<void> exportPDF(List<Stroke> strokes, String name) async {
+  final pdf = pw.Document(title: name);
 
   const PdfPageFormat a4 = PdfPageFormat(_a4width, _a4height);
 

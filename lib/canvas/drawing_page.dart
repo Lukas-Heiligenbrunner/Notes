@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import '../savesystem/note_file.dart';
 import '../widgets/drawing_page_top_actions.dart';
 import '../widgets/tool_bar.dart';
+import 'document_types.dart';
 import 'my_painter.dart';
 import 'paint_controller.dart';
 import 'screen_document_mapping.dart';
@@ -13,11 +14,9 @@ import 'screen_document_mapping.dart';
 /// Handles input events and draws canvas element
 class DrawingPage extends StatefulWidget {
   // path to the .dbnote file
-  final String filePath;
-  final String name;
+  final NoteMetaData meta;
 
-  const DrawingPage({Key? key, required this.filePath, required this.name})
-      : super(key: key);
+  const DrawingPage({Key? key, required this.meta}) : super(key: key);
 
   @override
   State<DrawingPage> createState() => _DrawingPageState();
@@ -29,7 +28,7 @@ class _DrawingPageState extends State<DrawingPage> {
   Offset offset = const Offset(.0, .0);
 
   late PaintController controller;
-  late NoteFile noteFile = NoteFile(widget.filePath);
+  late NoteFile noteFile = NoteFile(widget.meta.filePath);
 
   @override
   void initState() {
@@ -57,9 +56,10 @@ class _DrawingPageState extends State<DrawingPage> {
     return Scaffold(
       appBar: AppBar(
           backgroundColor: Colors.blueGrey,
-          title: Text(widget.name),
+          title: Text(widget.meta.name),
           actions: [
-            DrawingPageTopActions(controller: controller, noteName: widget.name)
+            DrawingPageTopActions(
+                controller: controller, noteMetaData: widget.meta)
           ]),
       body: Row(
         children: [

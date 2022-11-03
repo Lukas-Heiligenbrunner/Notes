@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import '../canvas/document_types.dart';
 import '../canvas/drawing_page.dart';
 import '../context/file_change_notifier.dart';
 
@@ -25,7 +26,7 @@ class NoteTile extends StatelessWidget {
           context,
           MaterialPageRoute(
             builder: (context) =>
-                DrawingPage(filePath: data.relativePath, name: data.name),
+                DrawingPage(meta: NoteMetaData(data.relativePath, data.name)),
           ),
         ).then((value) =>
             Provider.of<FileChangeNotifier>(context, listen: false)

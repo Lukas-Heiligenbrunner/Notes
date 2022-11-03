@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import 'canvas/document_types.dart';
 import 'canvas/drawing_page.dart';
 import 'context/file_change_notifier.dart';
 import 'pages/all_notes_page.dart';
@@ -58,8 +59,7 @@ class _AppState extends State<App> {
                 ctx,
                 MaterialPageRoute(
                   builder: (ctx) => DrawingPage(
-                    filePath: filename,
-                    name: name,
+                    meta: NoteMetaData(filename, name),
                   ),
                 ),
               ).then((v) => notifier.loadAllNotes());

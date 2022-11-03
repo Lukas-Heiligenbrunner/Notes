@@ -4,16 +4,17 @@ import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 
+import '../canvas/document_types.dart';
 import '../canvas/paint_controller.dart';
 import '../export/export_pdf.dart';
 import 'icon_material_button.dart';
 
 class DrawingPageTopActions extends StatefulWidget {
   const DrawingPageTopActions(
-      {Key? key, required this.controller, required this.noteName})
+      {Key? key, required this.controller, required this.noteMetaData})
       : super(key: key);
   final PaintController controller;
-  final String noteName;
+  final NoteMetaData noteMetaData;
 
   @override
   State<DrawingPageTopActions> createState() => _DrawingPageTopActionsState();
@@ -81,8 +82,8 @@ class _DrawingPageTopActionsState extends State<DrawingPageTopActions> {
                   ),
                   onTap: () async {
                     // todo move in correct submenu
-                    await exportPDF(
-                        widget.controller.strokes, '${widget.noteName}.pdf');
+                    await exportPDF(widget.controller.strokes,
+                        '${widget.noteMetaData.name}.pdf');
 
                     Widget toast = Container(
                       padding: const EdgeInsets.symmetric(

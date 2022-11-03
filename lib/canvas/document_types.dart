@@ -45,3 +45,10 @@ class Point {
 
   Point(this.point, this.thickness);
 }
+
+class NoteMetaData {
+  final String name;
+  final String filePath;
+
+  NoteMetaData(this.name, this.filePath);
+}

@@ -28,7 +28,7 @@ class _DrawingPageState extends State<DrawingPage> {
   Offset offset = const Offset(.0, .0);
 
   late PaintController controller;
-  late NoteFile noteFile = NoteFile(widget.meta.filePath);
+  late NoteFile noteFile = NoteFile(widget.meta.relativePath);
 
   @override
   void initState() {

@@ -59,7 +59,7 @@ class _AppState extends State<App> {
                 ctx,
                 MaterialPageRoute(
                   builder: (ctx) => DrawingPage(
-                    meta: NoteMetaData(filename, name),
+                    meta: NoteMetaData(filename, name, DateTime.now()),
                   ),
                 ),
               ).then((v) => notifier.loadAllNotes());

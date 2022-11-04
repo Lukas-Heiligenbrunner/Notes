@@ -2,15 +2,15 @@ import 'dart:io';
 
 import 'package:flutter/cupertino.dart';
 
+import '../canvas/document_types.dart';
 import '../savesystem/path.dart';
-import '../widgets/note_tile.dart';
 
 class FileChangeNotifier extends ChangeNotifier {
   FileChangeNotifier();
 
-  List<NoteTileData> tiledata = [];
+  List<NoteMetaData> tiledata = [];
 
-  Future<List<NoteTileData>> loadAllNotes() async {
+  Future<List<NoteMetaData>> loadAllNotes() async {
     final path = await getSavePath();
     if (!(await path.exists())) {
       await path.create(recursive: true);
@@ -23,7 +23,7 @@ class FileChangeNotifier extends ChangeNotifier {
       final lastmodified = (await fsentity.stat()).modified;
       final filename = fsentity.path.split(Platform.pathSeparator).last;
       final name = filename.substring(0, filename.length - 7);
-      return NoteTileData(name, filename, lastmodified);
+      return NoteMetaData(name, filename, lastmodified);
     }).toList();
     dta.sort(
       (a, b) => b.lastModified.compareTo(a.lastModified),

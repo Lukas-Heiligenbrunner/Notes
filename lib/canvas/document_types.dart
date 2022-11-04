@@ -48,7 +48,8 @@ class Point {
 
 class NoteMetaData {
   final String name;
-  final String filePath;
+  final String relativePath;
+  final DateTime lastModified;
 
-  NoteMetaData(this.name, this.filePath);
+  NoteMetaData(this.name, this.relativePath, this.lastModified);
 }

@@ -5,18 +5,10 @@ import '../canvas/document_types.dart';
 import '../canvas/drawing_page.dart';
 import '../context/file_change_notifier.dart';
 
-class NoteTileData {
-  final String name;
-  final String relativePath;
-  final DateTime lastModified;
-
-  NoteTileData(this.name, this.relativePath, this.lastModified);
-}
-
 class NoteTile extends StatelessWidget {
   const NoteTile({Key? key, required this.data}) : super(key: key);
 
-  final NoteTileData data;
+  final NoteMetaData data;
 
   @override
   Widget build(BuildContext context) {
@@ -25,8 +17,7 @@ class NoteTile extends StatelessWidget {
         Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (context) =>
-                DrawingPage(meta: NoteMetaData(data.relativePath, data.name)),
+            builder: (context) => DrawingPage(meta: data),
           ),
         ).then((value) =>
             Provider.of<FileChangeNotifier>(context, listen: false)

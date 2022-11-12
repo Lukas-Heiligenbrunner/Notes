@@ -2,7 +2,9 @@ import 'dart:ui';
 
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
+import '../context/file_change_notifier.dart';
 import '../savesystem/note_file.dart';
 import '../widgets/drawing_page_top_actions.dart';
 import '../widgets/tool_bar.dart';
@@ -29,6 +31,8 @@ class _DrawingPageState extends State<DrawingPage> {
 
   late PaintController controller;
   late NoteFile noteFile = NoteFile(widget.meta.relativePath);
+  late TextEditingController titleController =
+      TextEditingController(text: widget.meta.name);
 
   @override
   void initState() {
@@ -45,27 +49,47 @@ class _DrawingPageState extends State<DrawingPage> {
   }
 
   @override
-  void dispose() {
+  void dispose() async {
     super.dispose();
-
-    noteFile.close();
+    titleController.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: Text(widget.meta.name), actions: [
-        DrawingPageTopActions(controller: controller, noteMetaData: widget.meta)
-      ]),
-      body: Row(
-        children: [
-          ToolBar(
-            onPenChange: (pen) {
-              controller.changePen(pen);
-            },
-          ),
-          Expanded(child: RepaintBoundary(child: _buildCanvas())),
-        ],
+    return WillPopScope(
+      onWillPop: () async {
+        await noteFile.close().then((value) =>
+            Provider.of<FileChangeNotifier>(context, listen: false)
+                .loadAllNotes());
+
+        return true;
+      },
+      child: Scaffold(
+        appBar: AppBar(
+            title: TextField(
+              onChanged: (value) {
+                noteFile.rename('$value.dbnote');
+              },
+              controller: titleController,
+              style: const TextStyle(color: Colors.white, fontSize: 20),
+              decoration: const InputDecoration(
+                border: InputBorder.none,
+              ),
+            ),
+            actions: [
+              DrawingPageTopActions(
+                  controller: controller, noteMetaData: widget.meta)
+            ]),
+        body: Row(
+          children: [
+            ToolBar(
+              onPenChange: (pen) {
+                controller.changePen(pen);
+              },
+            ),
+            Expanded(child: RepaintBoundary(child: _buildCanvas())),
+          ],
+        ),
       ),
     );
   }

@@ -23,7 +23,8 @@ class FileChangeNotifier extends ChangeNotifier {
       final lastmodified = (await fsentity.stat()).modified;
       final filename = fsentity.path.split(Platform.pathSeparator).last;
       final name = filename.substring(0, filename.length - 7);
-      return NoteMetaData(name, filename, lastmodified);
+      return NoteMetaData(
+          name: name, relativePath: filename, lastModified: lastmodified);
     }).toList();
     dta.sort(
       (a, b) => b.lastModified.compareTo(a.lastModified),

@@ -51,5 +51,8 @@ class NoteMetaData {
   final String relativePath;
   final DateTime lastModified;
 
-  NoteMetaData(this.name, this.relativePath, this.lastModified);
+  NoteMetaData(
+      {required this.name,
+      required this.relativePath,
+      required this.lastModified});
 }

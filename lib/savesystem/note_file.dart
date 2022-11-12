@@ -7,16 +7,20 @@ import 'path.dart';
 
 class NoteFile {
   late Database _db;
-  String filepath;
+  String filename;
+  late String _basePath;
+
+  String? _newFileName;
 
   Database db() {
     return _db;
   }
 
-  NoteFile(this.filepath);
+  NoteFile(this.filename);
 
   Future<void> init() async {
-    final path = (await getSavePath()).path + Platform.pathSeparator + filepath;
+    _basePath = (await getSavePath()).path;
+    final path = _basePath + Platform.pathSeparator + filename;
     _db = await openDatabase(
       path,
       onCreate: (db, version) async {
@@ -38,8 +42,13 @@ class NoteFile {
     );
   }
 
-  void delete() {
-    // todo remove db file
+  Future<void> delete() async {
+    await close();
+    await File(_basePath + Platform.pathSeparator + filename).delete();
+  }
+
+  void rename(String newname) {
+    _newFileName = newname;
   }
 
   Future<void> close() async {
@@ -49,6 +58,14 @@ class NoteFile {
       await _db.close();
     } else {
       debugPrint('db file unexpectedly closed before shrinking');
+    }
+
+    // perform qued file renaming operations
+    if (_newFileName != null) {
+      File(_basePath + Platform.pathSeparator + filename)
+          .rename(_basePath + Platform.pathSeparator + _newFileName!);
+      filename = _newFileName!;
+      _newFileName = null;
     }
   }
 }

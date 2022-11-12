@@ -3,12 +3,14 @@ import 'dart:math';
 import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import 'wip_toast.dart';
+import 'package:provider/provider.dart';
 
 import '../canvas/document_types.dart';
 import '../canvas/paint_controller.dart';
+import '../context/file_change_notifier.dart';
 import '../export/export_pdf.dart';
 import 'icon_material_button.dart';
+import 'wip_toast.dart';
 
 class DrawingPageTopActions extends StatefulWidget {
   const DrawingPageTopActions(
@@ -157,6 +159,20 @@ class _DrawingPageTopActionsState extends State<DrawingPageTopActions> {
                       gravity: ToastGravity.BOTTOM,
                       toastDuration: const Duration(seconds: 2),
                     );
+                  },
+                ),
+                PopupMenuItem<int>(
+                  value: 0,
+                  child: const Text(
+                    'Delete',
+                    style: TextStyle(color: Color(0xffe5e5e5)),
+                  ),
+                  onTap: () {
+                    widget.controller.file.delete().then((value) {
+                      Provider.of<FileChangeNotifier>(context, listen: false)
+                          .loadAllNotes();
+                      Navigator.of(context).pop();
+                    });
                   },
                 ),
               ]);

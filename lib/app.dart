@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 
 import 'canvas/document_types.dart';
 import 'canvas/drawing_page.dart';
-import 'context/file_change_notifier.dart';
 import 'pages/all_notes_page.dart';
 import 'widgets/collapse_drawer.dart';
 
@@ -19,26 +17,21 @@ class _AppState extends State<App> {
 
   @override
   Widget build(BuildContext context) {
-    return ChangeNotifierProvider(
-      create: (ctx) {
-        return FileChangeNotifier()..loadAllNotes();
-      },
-      child: Scaffold(
-        floatingActionButton: _fab(),
-        body: Row(
-          children: [
-            CollapseDrawer(
-              onPageChange: (View newPage) =>
-                  setState(() => activePage = newPage),
-              activePage: activePage,
-            ),
-            Expanded(
-                child: Container(
-              color: const Color(0xff000000),
-              child: _buildPage(),
-            ))
-          ],
-        ),
+    return Scaffold(
+      floatingActionButton: _fab(),
+      body: Row(
+        children: [
+          CollapseDrawer(
+            onPageChange: (View newPage) =>
+                setState(() => activePage = newPage),
+            activePage: activePage,
+          ),
+          Expanded(
+              child: Container(
+            color: const Color(0xff000000),
+            child: _buildPage(),
+          ))
+        ],
       ),
     );
   }
@@ -47,27 +40,28 @@ class _AppState extends State<App> {
     switch (activePage) {
       case View.all:
       case View.folders:
-        return Consumer<FileChangeNotifier>(
-          builder: (ctx, notifier, child) => FloatingActionButton(
-            onPressed: () async {
-              final now = DateTime.now();
-              final name =
-                  'note-${now.year}_${now.month}_${now.day}-${now.hour}_${now.minute}_${now.second}';
-              final filename = '$name.dbnote';
+        return FloatingActionButton(
+          onPressed: () async {
+            final now = DateTime.now();
+            final name =
+                'note-${now.year}_${now.month}_${now.day}-${now.hour}_${now.minute}_${now.second}';
+            final filename = '$name.dbnote';
 
-              Navigator.push(
-                ctx,
-                MaterialPageRoute(
-                  builder: (ctx) => DrawingPage(
-                    meta: NoteMetaData(filename, name, DateTime.now()),
-                  ),
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (ctx) => DrawingPage(
+                  meta: NoteMetaData(
+                      name: name,
+                      relativePath: filename,
+                      lastModified: DateTime.now()),
                 ),
-              ).then((v) => notifier.loadAllNotes());
-            },
-            backgroundColor: const Color(0xff3f3f3f),
-            child: const Icon(Icons.edit_calendar_outlined,
-                color: Color(0xffff7300)),
-          ),
+              ),
+            );
+          },
+          backgroundColor: const Color(0xff3f3f3f),
+          child: const Icon(Icons.edit_calendar_outlined,
+              color: Color(0xffff7300)),
         );
       default:
         return Container();

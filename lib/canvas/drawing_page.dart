@@ -147,6 +147,14 @@ class _DrawingPageState extends State<DrawingPage> {
     return Listener(
       behavior: HitTestBehavior.opaque,
       onPointerMove: (e) => _onPointerMove(e, canvasSize),
+      onPointerSignal: (pointerSignal) {
+        debugPrint('got pointer signal: $pointerSignal');
+
+        if (pointerSignal is PointerScrollEvent) {
+          final delta = pointerSignal.scrollDelta;
+          _calcNewPageOffset(-delta, size.width);
+        }
+      },
       onPointerDown: (d) {
         Offset pos = d.localPosition;
         final scale = calcPageDependentScale(zoom, a4Page, canvasSize);

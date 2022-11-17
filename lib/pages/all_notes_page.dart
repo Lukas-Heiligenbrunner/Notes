@@ -209,48 +209,75 @@ class _AllNotesPageState extends State<AllNotesPage> {
   Widget _buildNoteTiles() {
     return Consumer<FileChangeNotifier>(
       builder: (BuildContext context, value, Widget? child) {
-        return Expanded(
-          child: GridView.builder(
-            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 6, childAspectRatio: 0.7),
-            physics: const ScrollPhysics(),
-            padding: const EdgeInsets.all(2),
-            itemBuilder: (BuildContext context, int idx) => NoteTile(
-              data: value.tiledata[idx],
-              selectionMode: selectionMode,
-              selected: selectionIdx.contains(idx),
-              onSelectionChange: (selection) {
-                if (selection) {
-                  if (!selectionMode) {
-                    setState(() {
-                      selectionMode = true;
-                    });
-                  }
-                  if (!selectionIdx.contains(idx)) {
+        if (value.tiledata.isEmpty) {
+          return _buildNoNotesText();
+        } else {
+          return Expanded(
+            child: GridView.builder(
+              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: 6, childAspectRatio: 0.7),
+              physics: const ScrollPhysics(),
+              padding: const EdgeInsets.all(2),
+              itemBuilder: (BuildContext context, int idx) => NoteTile(
+                data: value.tiledata[idx],
+                selectionMode: selectionMode,
+                selected: selectionIdx.contains(idx),
+                onSelectionChange: (selection) {
+                  if (selection) {
+                    if (!selectionMode) {
+                      setState(() {
+                        selectionMode = true;
+                      });
+                    }
+                    if (!selectionIdx.contains(idx)) {
+                      final sel = selectionIdx;
+                      sel.add(idx);
+                      setState(() {
+                        selectionIdx = sel;
+                      });
+                    }
+                  } else {
                     final sel = selectionIdx;
-                    sel.add(idx);
+                    sel.remove(idx);
+                    if (sel.isEmpty) {
+                      setState(() {
+                        selectionMode = false;
+                      });
+                    }
                     setState(() {
                       selectionIdx = sel;
                     });
                   }
-                } else {
-                  final sel = selectionIdx;
-                  sel.remove(idx);
-                  if (sel.isEmpty) {
-                    setState(() {
-                      selectionMode = false;
-                    });
-                  }
-                  setState(() {
-                    selectionIdx = sel;
-                  });
-                }
-              },
+                },
+              ),
+              itemCount: value.tiledata.length,
             ),
-            itemCount: value.tiledata.length,
-          ),
-        );
+          );
+        }
       },
+    );
+  }
+
+  Widget _buildNoNotesText() {
+    return Expanded(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: const [
+          Text(
+            'No notes',
+            style: TextStyle(
+                color: Color.fromRGBO(255, 255, 255, .75), fontSize: 14),
+          ),
+          SizedBox(
+            height: 10,
+          ),
+          Text(
+            'Tap the Add Button to create a note.',
+            style: TextStyle(
+                color: Color.fromRGBO(255, 255, 255, .65), fontSize: 12),
+          )
+        ],
+      ),
     );
   }
 }

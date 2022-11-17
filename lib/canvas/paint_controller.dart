@@ -12,45 +12,24 @@ import 'my_painter.dart';
 enum Pen { eraser, pen, highlighter, selector }
 
 class PaintController extends ChangeNotifier {
+  final bool _allowDrawWithFinger = false;
+  final NoteFile file;
+
+  Offset? _currentPointerPosition;
   Pen activePen = Pen.pen;
   List<Stroke> strokes = [];
-  final bool _allowDrawWithFinger = false;
 
   PaintController(this.file);
-
-  final NoteFile file;
 
   void changePen(Pen pen) {
     activePen = pen;
     notifyListeners();
   }
 
-  double _calcTiltedWidth(double baseWidth, double tilt) {
-    if (tilt == .0) return baseWidth;
-    return baseWidth * tilt;
-  }
-
-  double _calcAngleDependentWidth(Point pt1, Point pt2, double basetickness) {
-    final delta = pt2.point - pt1.point;
-    final normalizedDelta =
-        delta / sqrt(delta.dx * delta.dx + delta.dy * delta.dy);
-
-    double alpha = asin(normalizedDelta.dy);
-    // range [-pi,pi]
-    alpha += (3 * pi / 4);
-    // range [0,inf]
-    alpha = alpha % (2 * pi);
-    // range [0,2pi]
-    alpha -= pi;
-    // range [-pi,pi]
-    alpha = alpha.abs();
-    // range [0,pi]
-    alpha /= pi;
-    // range [0,1]
-    alpha += .5;
-    // range [.5,1.5]
-
-    return basetickness * alpha;
+  /// return current position of pointer
+  /// null if nowhere hovering or painting
+  Offset? getPointerPosition() {
+    return _currentPointerPosition;
   }
 
   void pointDownEvent(Offset offset, PointerDownEvent e) async {
@@ -73,6 +52,9 @@ class PaintController extends ChangeNotifier {
   }
 
   void pointUpEvent(PointerUpEvent e) {
+    _currentPointerPosition = null;
+    notifyListeners();
+
     if (activePen == Pen.eraser) return;
 
     // pointerupevent doesn't deliver correct event button
@@ -90,14 +72,9 @@ class PaintController extends ChangeNotifier {
     }
   }
 
-  /// check if pointer event is allowed to draw points
-  bool _allowedToDraw(PointerDeviceKind kind, int button) {
-    return (_allowDrawWithFinger && kind == PointerDeviceKind.touch) ||
-        kind == PointerDeviceKind.stylus ||
-        (kind == PointerDeviceKind.mouse && button == kPrimaryMouseButton);
-  }
-
   void pointMoveEvent(Offset offset, PointerMoveEvent event) {
+    _currentPointerPosition = offset;
+
     if (!a4Page.contains(offset)) {
       return;
     }
@@ -106,10 +83,10 @@ class PaintController extends ChangeNotifier {
       switch (activePen) {
         case Pen.eraser:
           // todo dynamic eraser size
-          final eraserrect = Rect.fromCircle(center: offset, radius: 3);
+          final eraserrect = Rect.fromCircle(center: offset, radius: 2.0);
           for (final stroke in strokes) {
             // check if delete action was within bounding rect of stroke
-            if (stroke.getBoundingRect().contains(offset)) {
+            if (stroke.getBoundingRect().overlaps(eraserrect)) {
               // check if eraser hit an point within its range
               for (final pt in stroke.points) {
                 if (eraserrect.contains(pt.point)) {
@@ -154,5 +131,40 @@ class PaintController extends ChangeNotifier {
     strokes = await file.loadStrokes();
     debugPrint('finished loading strokes from file');
     notifyListeners();
+  }
+
+  /// check if pointer event is allowed to draw points
+  bool _allowedToDraw(PointerDeviceKind kind, int button) {
+    return (_allowDrawWithFinger && kind == PointerDeviceKind.touch) ||
+        kind == PointerDeviceKind.stylus ||
+        (kind == PointerDeviceKind.mouse && button == kPrimaryMouseButton);
+  }
+
+  double _calcAngleDependentWidth(Point pt1, Point pt2, double basetickness) {
+    final delta = pt2.point - pt1.point;
+    final normalizedDelta =
+        delta / sqrt(delta.dx * delta.dx + delta.dy * delta.dy);
+
+    double alpha = asin(normalizedDelta.dy);
+    // range [-pi,pi]
+    alpha += (3 * pi / 4);
+    // range [0,inf]
+    alpha = alpha % (2 * pi);
+    // range [0,2pi]
+    alpha -= pi;
+    // range [-pi,pi]
+    alpha = alpha.abs();
+    // range [0,pi]
+    alpha /= pi;
+    // range [0,1]
+    alpha += .5;
+    // range [.5,1.5]
+
+    return basetickness * alpha;
+  }
+
+  double _calcTiltedWidth(double baseWidth, double tilt) {
+    if (tilt == .0) return baseWidth;
+    return baseWidth * tilt;
   }
 }

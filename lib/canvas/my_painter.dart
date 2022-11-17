@@ -80,6 +80,20 @@ class MyPainter extends CustomPainter {
         }
       }
     }
+
+    // active eraser outline
+    if (activePen == Pen.eraser) {
+      final pointerpos = controller.getPointerPosition();
+      if (pointerpos != null) {
+        final translatedPointerpos = _translatept(pointerpos, size);
+        canvas.drawCircle(
+            translatedPointerpos,
+            calcPageDependentScale(zoom, a4Page, canvasSize) * 2.0,
+            paint
+              ..style = PaintingStyle.stroke
+              ..color = Colors.grey);
+      }
+    }
   }
 
   @override

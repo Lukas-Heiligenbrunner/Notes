@@ -18,6 +18,7 @@ class PaintController extends ChangeNotifier {
   Offset? _currentPointerPosition;
   Pen activePen = Pen.pen;
   List<Stroke> strokes = [];
+  Offset? _selectionStart;
 
   PaintController(this.file);
 
@@ -37,38 +38,59 @@ class PaintController extends ChangeNotifier {
       // todo line drawn on edge where line left page
       if (!a4Page.contains(offset)) return;
 
-      // todo handle other pens
-      if (activePen == Pen.eraser || activePen == Pen.selector) return;
-
-      int strokeid = strokes.isNotEmpty ? strokes.last.id + 1 : 0;
-      final color = activePen == Pen.pen
-          ? const Color(0xFF444444)
-          : Colors.yellow.withOpacity(.3);
-      strokes.add(Stroke.fromPoints(
-          [Point(offset, _calcTiltedWidth(3.0, e.tilt))], strokeid, color));
-      file.addStroke(strokeid, color);
-      notifyListeners();
+      switch (activePen) {
+        case Pen.pen:
+        case Pen.highlighter:
+          int strokeid = strokes.isNotEmpty ? strokes.last.id + 1 : 0;
+          final color = activePen == Pen.pen
+              ? const Color(0xFF444444)
+              : Colors.yellow.withOpacity(.3);
+          strokes.add(Stroke.fromPoints(
+              [Point(offset, _calcTiltedWidth(3.0, e.tilt))], strokeid, color));
+          file.addStroke(strokeid, color);
+          notifyListeners();
+          break;
+        case Pen.selector:
+          _selectionStart = offset;
+          break;
+        default:
+          break;
+      }
     }
+  }
+
+  Rect? getSelection() {
+    if (_currentPointerPosition == null || _selectionStart == null) return null;
+    return Rect.fromPoints(_selectionStart!, _currentPointerPosition!);
   }
 
   void pointUpEvent(PointerUpEvent e) {
     _currentPointerPosition = null;
     notifyListeners();
 
-    if (activePen == Pen.eraser) return;
-
-    // pointerupevent doesn't deliver correct event button
-    if (_allowedToDraw(e.kind, 1)) {
-      final lastStroke = strokes.last;
-      if (lastStroke.points.length <= 1) {
-        // if the line consists only of one point (point) add endpoint as the same to allow drawing a line
-        lastStroke.points.add(lastStroke.points.last);
-        file.addPoint(lastStroke.id, lastStroke.points.last);
-        notifyListeners();
-      } else {
-        debugPrint('adding points to db');
-        file.addPoints(lastStroke.id, lastStroke.points);
-      }
+    switch (activePen) {
+      case Pen.pen:
+      case Pen.highlighter:
+        // pointerupevent doesn't deliver correct event button
+        if (_allowedToDraw(e.kind, 1)) {
+          final lastStroke = strokes.last;
+          if (lastStroke.points.length <= 1) {
+            // if the line consists only of one point (point) add endpoint as the same to allow drawing a line
+            lastStroke.points.add(lastStroke.points.last);
+            file.addPoint(lastStroke.id, lastStroke.points.last);
+            notifyListeners();
+          } else {
+            debugPrint('adding points to db');
+            file.addPoints(lastStroke.id, lastStroke.points);
+          }
+        }
+        break;
+      case Pen.selector:
+        _selectionStart = null;
+        // todo highlight current selection
+        break;
+      default:
+        break;
     }
   }
 

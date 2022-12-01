@@ -2,6 +2,7 @@ import 'dart:ui';
 
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 
 import '../context/file_change_notifier.dart';
@@ -151,8 +152,17 @@ class _DrawingPageState extends State<DrawingPage> {
         debugPrint('got pointer signal: $pointerSignal');
 
         if (pointerSignal is PointerScrollEvent) {
+          final bool ctrlPressed = RawKeyboard.instance.keysPressed
+              .contains(LogicalKeyboardKey.controlLeft);
+
           final delta = pointerSignal.scrollDelta;
-          _calcNewPageOffset(-delta, size.width);
+          if (ctrlPressed) {
+            setState(() {
+              zoom = (zoom - delta.dy.sign * .1).clamp(0.25, 5.0);
+            });
+          } else {
+            _calcNewPageOffset(-delta, size.width);
+          }
         }
       },
       onPointerDown: (d) {

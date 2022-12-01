@@ -3,6 +3,8 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 
 import 'paint_controller.dart';
+import 'path/path_transform.dart';
+import 'path/ring_number_provider.dart';
 import 'screen_document_mapping.dart';
 
 final Rect a4Page =
@@ -81,18 +83,37 @@ class MyPainter extends CustomPainter {
       }
     }
 
-    // active eraser outline
-    if (activePen == Pen.eraser) {
-      final pointerpos = controller.getPointerPosition();
-      if (pointerpos != null) {
-        final translatedPointerpos = _translatept(pointerpos, size);
-        canvas.drawCircle(
-            translatedPointerpos,
-            calcPageDependentScale(zoom, a4Page, canvasSize) * 2.0,
-            paint
-              ..style = PaintingStyle.stroke
-              ..color = Colors.grey);
-      }
+    // active pen hover effects
+    switch (activePen) {
+      case Pen.eraser:
+        final pointerpos = controller.getPointerPosition();
+        if (pointerpos != null) {
+          final translatedPointerpos = _translatept(pointerpos, size);
+          canvas.drawCircle(
+              translatedPointerpos,
+              calcPageDependentScale(zoom, a4Page, canvasSize) * 2.0,
+              paint
+                ..style = PaintingStyle.stroke
+                ..color = Colors.grey);
+        }
+        break;
+      case Pen.selector:
+        final selection = controller.getSelection();
+        if (selection != null) {
+          final rectpath = (Path()
+                ..addRect(Rect.fromPoints(_translatept(selection.topLeft, size),
+                    _translatept(selection.bottomRight, size))))
+              .dashPath(RingNumberProvider([3, 5]));
+
+          canvas.drawPath(
+              rectpath,
+              paint
+                ..style = PaintingStyle.stroke
+                ..color = Colors.grey);
+        }
+        break;
+      default:
+        break;
     }
   }
 

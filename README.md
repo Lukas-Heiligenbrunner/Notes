@@ -1,7 +1,7 @@
 # Notes
 
-A FOSS alternative for taking handwritten notes on Android.
-Note that this project is still in an early development stage and far away to be seen as stable.
+This is a Mockup for a Notetaking app in flutter based on the design of Samsung Notes.
+It is not intended for use as is, more as a template for further development.
 
 ## Features
 
